@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/wicked-baby/wicked-baby.png?label=ready&title=Ready)](https://waffle.io/wicked-baby/wicked-baby)
 # Thumb
 
 > Anonymous thumbs-check for HR students
