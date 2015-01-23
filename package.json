@@ -1,7 +1,9 @@
 {
   "name": "wickedBaby",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.11.1"
+  },
   "devDependencies": {
     "gulp": "~3.8.10",
     "gulp-autoprefixer": "~2.0.0",
