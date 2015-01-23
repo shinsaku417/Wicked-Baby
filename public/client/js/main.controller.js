@@ -24,4 +24,18 @@ angular.module('wickedBaby', [])
       socket.emit('confused');
     };
 
+  })
+  .controller('TeacherCtrl', function ($scope) {
+    $scope.counter = 0;
+    $scope.confusionRate = $scope.counter / 60;
+    $scope.percentage = $scope.confusionRate * 100 + "%";
+
+    var socket = io();
+    socket.on('confused', function() {
+      $scope.counter++;
+      if ($scope.confusionRate > 0.5) {
+        alert('confused');
+      }
+    });
+
   });
