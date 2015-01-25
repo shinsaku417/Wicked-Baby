@@ -12,7 +12,6 @@ app.get('/', function(req, res){
   res.sendFile(path);
   //res.sendfile('./index.html'); //this will work, but only within the same directory. Not sure why. Also
                                 //sendfile is deprecated. Should be using sendFile() which requires more.
-
 });
 
 app.get('/student', function(req, res){

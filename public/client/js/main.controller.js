@@ -23,7 +23,6 @@ angular.module('wickedBaby', [])
     $scope.confused = function(){
       socket.emit('confused');
     };
-
   })
   .controller('TeacherCtrl', function ($scope, socket) {
     // total number, rate, and percentage of confusion
@@ -41,7 +40,11 @@ angular.module('wickedBaby', [])
       });
       // if confusion rate is above 0.5, alert the teacher
       if ($scope.confusionRate > 0.5) {
-        alert('confused');
+        swal({
+          title: "Confused!",
+          text: "Students are confused!",
+          confirmButtonText: "Help them!"
+        });
       }
     });
 
@@ -61,4 +64,4 @@ angular.module('wickedBaby', [])
     // connect to the local host and return the socket
     var socket = io.connect('http://127.0.0.1:8000/');
     return socket;
-  })
+  });
