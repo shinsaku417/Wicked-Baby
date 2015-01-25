@@ -21,7 +21,18 @@ angular.module('wickedBaby', [])
   .controller('StudentCtrl', function ($scope, socket) {
     // emit 'confused' event to the server when the confused button is clicked
     $scope.confused = function(){
+      var button = document.getElementsByClassName('confused')[0];
+      button.className = "disabled";
+      button.disabled = true;
       socket.emit('confused');
+      setTimeout($scope.cancel, 60000);
+    };
+
+    $scope.cancel = function() {
+      var button = document.getElementsByClassName('disabled')[0];
+      button.disabled = false;
+      button.className = "confused";
+      socket.emit('decrement');
     };
   })
   .controller('TeacherCtrl', function ($scope, socket) {
@@ -29,6 +40,10 @@ angular.module('wickedBaby', [])
     $scope.counter = 0;
     $scope.confusionRate = $scope.counter / 60;
     $scope.percentage = $scope.confusionRate * 100 + "%";
+
+    // default threshold
+    $scope.threshold = 50;
+
     // listens to 'add' event emitted by the server
     socket.on('add', function() {
       // this call seems to be executed outside of angular's context, so use
@@ -39,7 +54,7 @@ angular.module('wickedBaby', [])
         $scope.percentage = $scope.confusionRate * 100 + "%";
       });
       // if confusion rate is above 0.5, alert the teacher
-      if ($scope.confusionRate > 0.5) {
+      if ($scope.percentage > $scope.threshold) {
         swal({
           title: "Confused!",
           text: "Students are confused!",
