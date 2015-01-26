@@ -19,27 +19,45 @@ angular.module('wickedBaby', [])
     };
   })
   .controller('StudentCtrl', function ($scope, socket) {
-    // emit 'confused' event to the server when the confused button is clicked
+
+    // when confused button is clicked
     $scope.confused = function(){
-      var button = document.getElementsByClassName('confused')[0];
-      button.className = "disabled";
-      button.disabled = true;
+      var confused = document.getElementsByClassName('confused')[0];
+      var cancel = document.getElementsByClassName('cancel')[0];
+      // disable confused button
+      confused.className = "disabled";
+      confused.disabled = true;
+      // enable cancel button
+      cancel.disabled = false;
+      // emit message to the server
       socket.emit('confused');
+      // confusion automatically disappears 1 min after pressing the button
       setTimeout($scope.cancel, 60000);
     };
 
+    // when cancel button is clicked
     $scope.cancel = function() {
-      var button = document.getElementsByClassName('disabled')[0];
-      button.disabled = false;
-      button.className = "confused";
-      socket.emit('decrement');
+      var confused = document.getElementsByClassName('disabled')[0];
+      var cancel = document.getElementsByClassName('cancel')[0];
+      // enable confused button
+      confused.className = "confused";
+      confused.disabled = false;
+      // disable cancel button
+      cancel.disabled = true;
+      // emit message to the server
+      socket.emit('not confused');
     };
   })
   .controller('TeacherCtrl', function ($scope, socket) {
+    // Calculates confusion rate and percentage
+    var confusionCalculator = function() {
+      $scope.confusionRate = ($scope.counter / 60).toFixed(2);
+      $scope.percentage = $scope.confusionRate * 100 + "%";
+    }
+    
     // total number, rate, and percentage of confusion
     $scope.counter = 0;
-    $scope.confusionRate = $scope.counter / 60;
-    $scope.percentage = $scope.confusionRate * 100 + "%";
+    confusionCalculator();
 
     // default threshold
     $scope.threshold = 50;
@@ -50,8 +68,7 @@ angular.module('wickedBaby', [])
       // $scope.apply here. More info at http://stackoverflow.com/questions/24596056/angular-binding-not-updating-with-socket-io-broadcast
       $scope.$apply(function() {
         $scope.counter++;
-        $scope.confusionRate = $scope.counter / 60;
-        $scope.percentage = $scope.confusionRate * 100 + "%";
+        confusionCalculator();
       });
       // if confusion rate is above 0.5, alert the teacher
       if ($scope.percentage > $scope.threshold) {
@@ -62,6 +79,14 @@ angular.module('wickedBaby', [])
         });
       }
     });
+
+    socket.on('subtract', function() {
+      $scope.$apply(function() {
+        $scope.counter--;
+        confusionCalculator();
+      });
+    });
+
 
   })
   // login Helper

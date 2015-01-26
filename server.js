@@ -35,4 +35,10 @@ io.on('connection', function (socket) {
     // broadcasts the add message to all the clients
     socket.broadcast.emit('add');
   });
+
+  // when student presses cancel or 60 seconds have passed after pressing the button
+  socket.on('not confused', function (data) {
+    // broadcasts the subtract message to all the clients
+    socket.broadcast.emit('subtract');
+  });
 });
