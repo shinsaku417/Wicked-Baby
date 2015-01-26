@@ -51,10 +51,10 @@ angular.module('wickedBaby', [])
   .controller('TeacherCtrl', function ($scope, socket) {
     // Calculates confusion rate and percentage
     var confusionCalculator = function() {
-      $scope.confusionRate = ($scope.counter / 60).toFixed(2);
+      $scope.confusionRate = ($scope.counter / 60).toFixed(4);
       $scope.percentage = $scope.confusionRate * 100 + "%";
     }
-    
+
     // total number, rate, and percentage of confusion
     $scope.counter = 0;
     confusionCalculator();
