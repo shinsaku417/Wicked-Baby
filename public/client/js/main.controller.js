@@ -19,34 +19,48 @@ angular.module('wickedBaby', [])
     };
   })
   .controller('StudentCtrl', function ($scope, socket) {
+    var loc = window.location.href.split('/');
+    var username = loc[loc.length - 1];
 
     // when confused button is clicked
     $scope.confused = function(){
-      var confused = document.getElementsByClassName('confused')[0];
-      var cancel = document.getElementsByClassName('cancel')[0];
-      // disable confused button
-      confused.className = "disabled";
-      confused.disabled = true;
-      // enable cancel button
-      cancel.disabled = false;
-      // emit message to the server
-      socket.emit('confused');
-      // confusion automatically disappears 1 min after pressing the button
-      setTimeout($scope.cancel, 60000);
+      // emit not confused message to the server with username of this student
+      socket.emit('confused', {username: username});
+      // as of now setTimeout causes a bug where multiple student.html emit
+      // not confused message at once, causing counter in teacher.html to go
+      // negative
+      // setTimeout($scope.cancel, 60000);
     };
 
     // when cancel button is clicked
     $scope.cancel = function() {
-      var confused = document.getElementsByClassName('disabled')[0];
+      // emit not confused message to the server with username of this student
+      socket.emit('not confused', {username: username});
+    };
+
+    // listens to event emitted by the server for this specific student and
+    // enable cancel button while disabling confused button
+    socket.on('enable cancel on ' + username, function(data) {
+      var confused = document.getElementsByClassName('confused')[0];
+      var cancel = document.getElementsByClassName('cancel')[0];
+      // disable confused button
+      confused.className = "confused disabled";
+      confused.disabled = true;
+      // enable cancel button
+      cancel.disabled = false;
+    });
+
+    // listens to event emitted by the server for this specific student and
+    // enable confused button while disabling cancel button
+    socket.on('enable confused on ' + username, function(data) {
+      var confused = document.getElementsByClassName('confused')[0];
       var cancel = document.getElementsByClassName('cancel')[0];
       // enable confused button
-      confused.className = "confused";
+      confused.className = "confused enabled";
       confused.disabled = false;
       // disable cancel button
       cancel.disabled = true;
-      // emit message to the server
-      socket.emit('not confused');
-    };
+    });
   })
   .controller('TeacherCtrl', function ($scope, socket) {
     // Calculates confusion rate and percentage

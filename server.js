@@ -96,7 +96,7 @@ app.get('/', function(req, res){
   console.log('serving index.html');
   // if student is signed in, redirect them to /student
   if (req.user) {
-    res.redirect('/student')
+    res.redirect('/student/' + req.user.username);
     // else, serve up index.html
   } else {
     var path = __dirname + '/public/client/index.html';
@@ -108,7 +108,7 @@ app.post('/login', function(req, res){
   res.redirect('/github');
 });
 
-app.get('/student', function(req, res){
+app.get('/student/*', function(req, res){
   console.log('serving /student');
   var path = __dirname + '/public/client/student.html';
   res.sendFile(path);
@@ -123,13 +123,17 @@ app.get('/teacher', function(req, res){
 io.on('connection', function (socket) {
   // server listens to confused event emitted by the student client
   socket.on('confused', function (data) {
-    // broadcasts the add message to all the clients
-    socket.broadcast.emit('add');
+    // emits the add message to all the clients
+    io.sockets.emit('add');
+    // emits a message that will be listened by specific student
+    io.sockets.emit('enable cancel on ' + data.username);
   });
 
   // when student presses cancel or 60 seconds have passed after pressing the button
   socket.on('not confused', function (data) {
-    // broadcasts the subtract message to all the clients
-    socket.broadcast.emit('subtract');
+    // emits the subtract message to all the clients
+    io.sockets.emit('subtract');
+    // emits a message that will be listened by specific student
+    io.sockets.emit('enable confused on ' + data.username);
   });
 });
