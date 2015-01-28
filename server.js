@@ -94,8 +94,18 @@ server.listen(8000, function(){
 // serve up html files.
 app.get('/', function(req, res){
   console.log('serving index.html');
-  // if student is signed in, redirect them to /student
-  if (req.user) {
+
+  // placeholder object that will be replaced once database is implemented
+  var obj = {
+    Gsirius: true,
+    kchia: true,
+    mccarter: true,
+    shinsaku417: true
+  };
+
+  // if this student exists in our database, redirect them to student/username
+  // if not, serve up index.html
+  if (req.user && obj.hasOwnProperty(req.user.username)) {
     res.redirect('/student/' + req.user.username);
     // else, serve up index.html
   } else {
@@ -109,9 +119,18 @@ app.post('/login', function(req, res){
 });
 
 app.get('/student/*', function(req, res){
+  // check if req.url matches req.user.username to prevent outsiders
+  // from accessing protected resources
+  // if yes, serve student.html
+  // if not, redirect them to '/'
   console.log('serving /student');
-  var path = __dirname + '/public/client/student.html';
-  res.sendFile(path);
+  var path = req.url.split('/');
+  if (req.user && path[path.length - 1] === req.user.username) {
+    var path = __dirname + '/public/client/student.html';
+    res.sendFile(path);
+  } else {
+    res.redirect('/');
+  }
 });
 
 app.get('/teacher', function(req, res){
