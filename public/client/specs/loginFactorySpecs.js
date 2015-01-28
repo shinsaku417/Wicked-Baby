@@ -1,0 +1,4 @@
+describe('LoginFactory', function(){
+
+
+});
