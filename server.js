@@ -155,4 +155,8 @@ io.on('connection', function (socket) {
     // emits a message that will be listened by specific student
     io.sockets.emit('enable confused on ' + data.username);
   });
+
+  socket.on('confusion resolved', function(data) {
+    io.sockets.emit('resolved');
+  });
 });

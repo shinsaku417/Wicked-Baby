@@ -38,6 +38,16 @@ angular.module('wickedBaby', [])
       socket.emit('not confused', {username: username});
     };
 
+    var enableConfused = function() {
+      var confused = document.getElementsByClassName('confused')[0];
+      var cancel = document.getElementsByClassName('cancel')[0];
+      // enable confused button
+      confused.className = "confused enabled";
+      confused.disabled = false;
+      // disable cancel button
+      cancel.disabled = true;
+    }
+
     // listens to event emitted by the server for this specific student and
     // enable cancel button while disabling confused button
     socket.on('enable cancel on ' + username, function(data) {
@@ -53,13 +63,11 @@ angular.module('wickedBaby', [])
     // listens to event emitted by the server for this specific student and
     // enable confused button while disabling cancel button
     socket.on('enable confused on ' + username, function(data) {
-      var confused = document.getElementsByClassName('confused')[0];
-      var cancel = document.getElementsByClassName('cancel')[0];
-      // enable confused button
-      confused.className = "confused enabled";
-      confused.disabled = false;
-      // disable cancel button
-      cancel.disabled = true;
+      enableConfused();
+    });
+
+    socket.on('resolved', function(data) {
+      enableConfused();
     });
   })
   .controller('TeacherCtrl', function ($scope, socket) {
@@ -70,7 +78,7 @@ angular.module('wickedBaby', [])
     }
 
     // total number, rate, and percentage of confusion
-    $scope.counter = 0;
+    $scope.counter = localStorage["confusedCounter"] || 0;
     confusionCalculator();
 
     // default threshold
@@ -82,6 +90,7 @@ angular.module('wickedBaby', [])
       // $scope.apply here. More info at http://stackoverflow.com/questions/24596056/angular-binding-not-updating-with-socket-io-broadcast
       $scope.$apply(function() {
         $scope.counter++;
+        localStorage["confusedCounter"] = $scope.counter;
         confusionCalculator();
       });
       // if confusion rate is above 0.5, alert the teacher
@@ -90,6 +99,11 @@ angular.module('wickedBaby', [])
           title: "Confused!",
           text: "Students are confused!",
           confirmButtonText: "Help them!"
+        },
+        function() {
+          socket.emit("confusion resolved");
+          $scope.counter = 0;
+          confusionCalculator();
         });
       }
     });
@@ -97,11 +111,14 @@ angular.module('wickedBaby', [])
     socket.on('subtract', function() {
       $scope.$apply(function() {
         $scope.counter--;
+        localStorage["confusedCounter"] = $scope.counter;
         confusionCalculator();
       });
     });
 
-
+    $scope.logout = function() {
+      localStorage["confusedCounter"] = 0;
+    };
   })
   // login Helper
   .factory('LoginFactory', function($http, $location) {
