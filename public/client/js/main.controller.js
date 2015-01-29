@@ -38,6 +38,16 @@ angular.module('wickedBaby', [])
       socket.emit('not confused', {username: username});
     };
 
+    var enableConfused = function() {
+      var confused = document.getElementsByClassName('confused')[0];
+      var cancel = document.getElementsByClassName('cancel')[0];
+      // enable confused button
+      confused.className = "confused enabled";
+      confused.disabled = false;
+      // disable cancel button
+      cancel.disabled = true;
+    }
+
     // listens to event emitted by the server for this specific student and
     // enable cancel button while disabling confused button
     socket.on('enable cancel on ' + username, function(data) {
@@ -53,13 +63,11 @@ angular.module('wickedBaby', [])
     // listens to event emitted by the server for this specific student and
     // enable confused button while disabling cancel button
     socket.on('enable confused on ' + username, function(data) {
-      var confused = document.getElementsByClassName('confused')[0];
-      var cancel = document.getElementsByClassName('cancel')[0];
-      // enable confused button
-      confused.className = "confused enabled";
-      confused.disabled = false;
-      // disable cancel button
-      cancel.disabled = true;
+      enableConfused();
+    });
+
+    socket.on('resolved', function(data) {
+      enableConfused();
     });
   })
   .controller('TeacherCtrl', function ($scope, socket) {
@@ -90,6 +98,11 @@ angular.module('wickedBaby', [])
           title: "Confused!",
           text: "Students are confused!",
           confirmButtonText: "Help them!"
+        },
+        function() {
+          socket.emit("confusion resolved");
+          $scope.counter = 0;
+          confusionCalculator();
         });
       }
     });
