@@ -78,7 +78,7 @@ angular.module('wickedBaby', [])
     }
 
     // total number, rate, and percentage of confusion
-    $scope.counter = 0;
+    $scope.counter = localStorage["confusedCounter"] || 0;
     confusionCalculator();
 
     // default threshold
@@ -90,6 +90,7 @@ angular.module('wickedBaby', [])
       // $scope.apply here. More info at http://stackoverflow.com/questions/24596056/angular-binding-not-updating-with-socket-io-broadcast
       $scope.$apply(function() {
         $scope.counter++;
+        localStorage["confusedCounter"] = $scope.counter;
         confusionCalculator();
       });
       // if confusion rate is above 0.5, alert the teacher
@@ -110,11 +111,14 @@ angular.module('wickedBaby', [])
     socket.on('subtract', function() {
       $scope.$apply(function() {
         $scope.counter--;
+        localStorage["confusedCounter"] = $scope.counter;
         confusionCalculator();
       });
     });
 
-
+    $scope.logout = function() {
+      localStorage["confusedCounter"] = 0;
+    };
   })
   // login Helper
   .factory('LoginFactory', function($http, $location) {
