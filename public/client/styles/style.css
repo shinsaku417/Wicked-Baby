@@ -1,7 +1,7 @@
-.confused {
+.enabled {
   background-color: lightgreen;
 }
 
-.understood {
+.disabled {
   background-color: red;
 }
