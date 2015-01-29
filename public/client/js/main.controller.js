@@ -78,6 +78,7 @@ angular.module('wickedBaby', [])
     }
 
     // total number, rate, and percentage of confusion
+    // if counter is stored, set counter to that or 0 if not
     $scope.counter = localStorage["confusedCounter"] || 0;
     confusionCalculator();
 
@@ -100,10 +101,17 @@ angular.module('wickedBaby', [])
           text: "Students are confused!",
           confirmButtonText: "Help them!"
         },
+        // callback function that happens when teacher addresses a confusion
         function() {
+          // emit confusion resolved message to server
           socket.emit("confusion resolved");
-          $scope.counter = 0;
-          confusionCalculator();
+          // use $scope.apply to change counter
+          $scope.$apply(function() {
+            // reset the counter
+            $scope.counter = 0;
+            localStorage["confusedCounter"] = $scope.counter;
+            confusionCalculator();
+          });
         });
       }
     });
@@ -116,6 +124,7 @@ angular.module('wickedBaby', [])
       });
     });
 
+    // when teacher logs out, reset the confusion counter in local storage
     $scope.logout = function() {
       localStorage["confusedCounter"] = 0;
     };

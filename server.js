@@ -156,6 +156,7 @@ io.on('connection', function (socket) {
     io.sockets.emit('enable confused on ' + data.username);
   });
 
+  // emits resolved message to all clients once teacher resolves a confusion
   socket.on('confusion resolved', function(data) {
     io.sockets.emit('resolved');
   });
