@@ -70,7 +70,7 @@ angular.module('wickedBaby', [])
       enableConfused();
     });
   })
-  .controller('TeacherCtrl', function ($scope, socket, Dashboard) {
+  .controller('TeacherCtrl', function ($scope, socket) {
     // Calculates confusion rate and percentage
     var confusionCalculator = function() {
       $scope.confusionRate = ($scope.counter / 60).toFixed(4);
@@ -85,15 +85,22 @@ angular.module('wickedBaby', [])
     // default threshold
     $scope.threshold = 50;
 
+    // the degree to which to rotate the thumb in response to 'add' or 'subtract' events
+    $scope.degree = $scope.confusionRate * 180;
+      
     // listens to 'add' event emitted by the server
     socket.on('add', function() {
       // this call seems to be executed outside of angular's context, so use
       // $scope.apply here. More info at http://stackoverflow.com/questions/24596056/angular-binding-not-updating-with-socket-io-broadcast
+      
       $scope.$apply(function() {
         $scope.counter++;
         localStorage["confusedCounter"] = $scope.counter;
         confusionCalculator();
+        $scope.degree = $scope.confusionRate * 180;
+        document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
       });
+      
       // if confusion rate is above 0.5, alert the teacher
       if ($scope.percentage > $scope.threshold) {
         swal({
@@ -121,6 +128,8 @@ angular.module('wickedBaby', [])
         $scope.counter--;
         localStorage["confusedCounter"] = $scope.counter;
         confusionCalculator();
+        $scope.degree = $scope.confusionRate * 180;
+        document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
       });
     });
 
