@@ -77,6 +77,9 @@ angular.module('wickedBaby', [])
       $scope.percentage = $scope.confusionRate * 100 + "%";
     }
 
+    // tracks the confused status of students
+    var studentConfusedStatus = {};
+
     // total number, rate, and percentage of confusion
     // if counter is stored, set counter to that or 0 if not
     $scope.counter = localStorage["confusedCounter"] || 0;
@@ -89,48 +92,63 @@ angular.module('wickedBaby', [])
     $scope.degree = $scope.confusionRate * 180;
       
     // listens to 'add' event emitted by the server
-    socket.on('add', function() {
+    socket.on('add', function(username) {
       // this call seems to be executed outside of angular's context, so use
       // $scope.apply here. More info at http://stackoverflow.com/questions/24596056/angular-binding-not-updating-with-socket-io-broadcast
-      
-      $scope.$apply(function() {
-        $scope.counter++;
-        localStorage["confusedCounter"] = $scope.counter;
-        confusionCalculator();
-        $scope.degree = $scope.confusionRate * 180;
-        document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
-      });
-      
-      // if confusion rate is above 0.5, alert the teacher
-      if ($scope.percentage > $scope.threshold) {
-        swal({
-          title: "Confused!",
-          text: "Students are confused!",
-          confirmButtonText: "Help them!"
-        },
-        // callback function that happens when teacher addresses a confusion
-        function() {
-          // emit confusion resolved message to server
-          socket.emit("confusion resolved");
-          // use $scope.apply to change counter
-          $scope.$apply(function() {
-            // reset the counter
-            $scope.counter = 0;
-            localStorage["confusedCounter"] = $scope.counter;
-            confusionCalculator();
-          });
+      if(!studentConfusedStatus.username){
+        studentConfusedStatus.username = true;
+        $scope.$apply(function() {
+          $scope.counter++;
+          localStorage["confusedCounter"] = $scope.counter;
+          confusionCalculator();
+          $scope.degree = $scope.confusionRate * 180;
+          document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
         });
+        
+        // if confusion rate is above 0.5, alert the teacher
+        if ($scope.percentage > $scope.threshold) {
+          swal({
+            title: "Confused!",
+            text: "Students are confused!",
+            confirmButtonText: "Help them!"
+          },
+          // callback function that happens when teacher addresses a confusion
+          function() {
+            // emit confusion resolved message to server
+            socket.emit("confusion resolved");
+            // use $scope.apply to change counter
+            $scope.$apply(function() {
+              // reset the counter
+              $scope.counter = 0;
+              localStorage["confusedCounter"] = $scope.counter;
+              confusionCalculator();
+              $scope.degree = $scope.confusionRate * 180;
+              document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
+            });
+
+            // resets the confused status of each student
+            for(var key in studentConfusedStatus){
+              studentConfusedStatus[key] = false;
+            }
+          });
+        }  
       }
+
     });
 
-    socket.on('subtract', function() {
-      $scope.$apply(function() {
-        $scope.counter--;
-        localStorage["confusedCounter"] = $scope.counter;
-        confusionCalculator();
-        $scope.degree = $scope.confusionRate * 180;
-        document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
-      });
+    socket.on('subtract', function(username) {
+
+      if(studentConfusedStatus.username){
+        studentConfusedStatus.username = false;
+        $scope.$apply(function() {
+          $scope.counter--;
+          localStorage["confusedCounter"] = $scope.counter;
+          confusionCalculator();
+          $scope.degree = $scope.confusionRate * 180;
+          document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
+        }); 
+      }
+
     });
 
     // when teacher logs out, reset the confusion counter in local storage
