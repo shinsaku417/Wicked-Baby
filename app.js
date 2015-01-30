@@ -1,3 +1,4 @@
+
 var exports = module.exports = {}; //allows exporting of this module
 
 var Sequelize = require('sequelize');
@@ -8,9 +9,11 @@ var mysqlPassword = require('./config.js').mysqlPassword;
 
 var sequelize = new Sequelize('thumbs', 'root', mysqlPassword, {//database name, username, mysql root password
       host: '127.0.0.1',
+
       dialect: "mysql",
       port:    3306, 
     })
+
 
 //connects database
 sequelize
@@ -36,4 +39,5 @@ sequelize
 
 
 exports.db = sequelize;
+
 

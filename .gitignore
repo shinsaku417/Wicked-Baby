@@ -5,8 +5,13 @@ bower_components/
 dist/
 .DS_Store
 
+<<<<<<< HEAD
 
 
 
 ## API keys
 ./config.js
+=======
+#API keys and mySQL root server password
+config.js
+>>>>>>> (feat) creates mySQL database and Student model schema via sequelize

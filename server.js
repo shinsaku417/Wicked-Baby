@@ -10,6 +10,7 @@ var session = require('express-session');
 
 var db = require('./app.js');
 var apiKeys = require('./config.js');//contains api keys for github login
+
 //EXAMPLE OF PASSPORT IN ACTION: 
 
 //https://github.com/jaredhanson/passport-github/blob/master/examples/login/app.js
@@ -80,7 +81,6 @@ function(req, res){
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
-
 //   which, in this example, will redirect the user to the student login page.
 app.get('/github/callback', 
   passport.authenticate('github', { failureRedirect: '/' }),
@@ -171,12 +171,14 @@ io.on('connection', function (socket) {
   });
 });
 
+
 //////////////////HELPER FUNCTIONS///////////////////////
 var createUser = function(username, password, model){
   console.log('createUser was called');
   console.log(password);
   console.log('model type', typeof model);
   console.log('mode.create type', typeof model.create);
+
   model
   .create({
     username: username,
