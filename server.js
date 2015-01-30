@@ -9,11 +9,13 @@ var session = require('express-session');
 //EXAMPLE OF PASSPORT IN ACTION:
 
 var db = require('./app.js');
+var apiKeys = require('./config.js');//contains api keys for github login
 //EXAMPLE OF PASSPORT IN ACTION: 
 
 //https://github.com/jaredhanson/passport-github/blob/master/examples/login/app.js
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
+
 
 var GITHUB_CLIENT_ID = "5490ca3123aa702c0b5f";
 var GITHUB_CLIENT_SECRET = "d8a9ca8a81b6ba68156fe46864caf809de2b2b5d";
@@ -171,6 +173,10 @@ io.on('connection', function (socket) {
 
 //////////////////HELPER FUNCTIONS///////////////////////
 var createUser = function(username, password, model){
+  console.log('createUser was called');
+  console.log(password);
+  console.log('model type', typeof model);
+  console.log('mode.create type', typeof model.create);
   model
   .create({
     username: username,
@@ -184,7 +190,6 @@ var createUser = function(username, password, model){
     }
   })
 }
-
 
 
 
