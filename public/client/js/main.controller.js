@@ -128,13 +128,18 @@ angular.module('wickedBaby', [])
     $scope.logout = function() {
       localStorage["confusedCounter"] = 0;
     };
-    
-    Dashboard.fetchData().then(function(data){
-      console.log('success!')
-      Dashboard.render(data);
-    }).catch(function(err){
-      if (err) throw err;
-    });
+
+  })
+  .controller('DashboardCtrl', function(Dashboard){
+
+    // Dashboard.fetchData().then(function(data){
+    //   console.log('success!')
+    //   Dashboard.render(data);
+    // }).catch(function(err){
+    //   if (err) throw err;
+    // });
+
+     Dashboard.render();
 
   })
   // login Helper
@@ -178,7 +183,7 @@ angular.module('wickedBaby', [])
     var barW = 25;
     var margin = 25;
     var scale = 6;
-    var url = //
+    var url = 'test';
 
     var svg = d3.select("body")
                 .append("svg")
@@ -194,7 +199,7 @@ angular.module('wickedBaby', [])
       });
     };
 
-    var render = function(dataset){
+    var render = function(){
       svg.selectAll("rect")
         .data(dataset)
         .enter()

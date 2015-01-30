@@ -1,0 +1,21 @@
+<!doctype html>
+<html class="no-js" ng-app="wickedBaby">
+  <head>
+    <meta charset="utf-8">
+    <title>Hello Teacher!</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"> -->
+  </head>
+  <body ng-controller="DashboardCtrl">
+    <!-- <div ng-view></div> -->
+    <a class="logout" href="/logout" ng-click="logout()">logout</a><br>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-route/angular-route.js"></script>
+    <script src="../bower_components/d3/d3.js"></script>
+    <script src="../client/js/main.controller.js"></script>
+  </body>
+</html>
