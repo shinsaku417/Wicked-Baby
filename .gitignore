@@ -4,3 +4,8 @@ bower_components/
 .tmp/
 dist/
 .DS_Store
+
+
+#API keys and mySQL root server password
+config.js
+
