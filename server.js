@@ -9,17 +9,13 @@ var session = require('express-session');
 //EXAMPLE OF PASSPORT IN ACTION:
 
 var db = require('./app.js');
-var apiKeys = require('./config.js');//contains api keys for github login
+var keys = require('./config.js');//contains api keys for github login
 
 //EXAMPLE OF PASSPORT IN ACTION: 
 
 //https://github.com/jaredhanson/passport-github/blob/master/examples/login/app.js
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
-
-
-var GITHUB_CLIENT_ID = "5490ca3123aa702c0b5f";
-var GITHUB_CLIENT_SECRET = "d8a9ca8a81b6ba68156fe46864caf809de2b2b5d";
 
 // required to use passport sessions
 app.use(cookieParser('shhhh, very secret'));
@@ -53,8 +49,8 @@ passport.deserializeUser(function(obj, done) {
 //   credentials (in this case, an accessToken, refreshToken, and GitHub
 //   profile), and invoke a callback with a user object.
 passport.use(new GitHubStrategy({
-  clientID: GITHUB_CLIENT_ID,
-  clientSecret: GITHUB_CLIENT_SECRET,
+  clientID: keys.GITHUB_CLIENT_ID,
+  clientSecret: keys.GITHUB_CLIENT_SECRET,
   callbackURL: "http://localhost:8000/github/callback"
 },
 function(accessToken, refreshToken, profile, done) {
@@ -85,9 +81,8 @@ function(req, res){
 app.get('/github/callback', 
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
-    console.log(req.user);
-    createUser(req.user.login, req.user.id, db.Student);
-    res.redirect('/student');
+    createUser(req.user.displayName, req.user.id, db.Student);
+    res.redirect('/student/*');
   });
 
 app.get('/logout', function(req, res){
@@ -174,11 +169,6 @@ io.on('connection', function (socket) {
 
 //////////////////HELPER FUNCTIONS///////////////////////
 var createUser = function(username, password, model){
-  console.log('createUser was called');
-  console.log(password);
-  console.log('model type', typeof model);
-  console.log('mode.create type', typeof model.create);
-
   model
   .create({
     username: username,
