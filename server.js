@@ -81,7 +81,7 @@ function(req, res){
 app.get('/github/callback', 
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
-    // createUser(req.user.displayName, req.user.id, db.Student);
+    createUser(req.user.displayName, req.user.id, db.Student);
     res.redirect('/student/*');
   });
 
@@ -168,20 +168,20 @@ io.on('connection', function (socket) {
 
 
 //////////////////HELPER FUNCTIONS///////////////////////
-// var createUser = function(username, password, model){
-//   model
-//   .create({
-//     username: username,
-//     password: password
-//   })
-//   .complete(function(err, user) {
-//     if(err){
-//       console.log('error: ' + err)
-//     } else{
-//       console.log('user is saved! ' + user)
-//     }
-//   })
-// }
+var createUser = function(username, password, model){
+  model
+  .create({
+    username: username,
+    password: password
+  })
+  .complete(function(err, user) {
+    if(err){
+      console.log('error: ' + err)
+    } else{
+      console.log('user is saved! ' + user)
+    }
+  })
+}
 
 
 
