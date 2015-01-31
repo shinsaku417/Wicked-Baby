@@ -79,6 +79,22 @@ angular.module('wickedBaby', [])
     // the threshold value, the teacher will be alerted.
     $scope.threshold = 50;
 
+    // Sends an error when threshold is above 100 or below 0
+    // This is called whenever teacher changes the threshold
+    $scope.check = function() {
+      if ($scope.threshold > 100 || $scope.threshold < 0) {
+        swal({
+          title: "Error!",
+          text: "Threshold must be between 0-100!",
+          confirmButtonText: "I understand"
+        },
+        function() {
+          // Resets the threshold once teacher presses I understand
+          $scope.threshold = 50;
+        });
+      }
+    };
+
     // Track the confused status of students
     var studentConfusedStatus = {};
 
@@ -126,7 +142,7 @@ angular.module('wickedBaby', [])
         });
 
         // If confusion rate rises above the threshold, (sweet) alert the teacher
-        if ($scope.percentage > $scope.threshold) {
+        if ($scope.percentage >= $scope.threshold) {
           swal({
             title: "Confused!",
             text: "Students are confused!",
