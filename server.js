@@ -128,6 +128,11 @@ app.get('/', function(req, res){
   }
 });
 
+app.get('/dashboard', function(req, res) {
+  var path = __dirname + '/public/client/dashboard.html';
+  res.sendFile(path);
+})
+
 app.post('/login', function(req, res){
   res.redirect('/github');
 });
@@ -176,5 +181,3 @@ io.on('connection', function (socket) {
     io.sockets.emit('resolved');
   });
 });
-
-}
