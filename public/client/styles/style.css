@@ -1,14 +1,84 @@
-.enabled {
-  background-color: lightgreen;
-}
-
-.disabled {
-  background-color: red;
+/* index.html */
+.container {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align:center;
 }
 
 .thumb {
-  -ms-transform: rotate(90deg); /* IE 9 */
-  -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
-  transform: rotate(90deg);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 
+.loginbutton {
+  display: block;
+}
+
+/* student.html */
+.btn-circle {
+  width: 200px;
+  height: 200px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 24px;
+  line-height: 1.42;
+  border-radius: 1000px;
+  margin: 0px 50px 0px 50px;
+}
+
+/* teacher.html */
+.container-teacher {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align:center;
+}
+
+.thumb-teacher {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 275px;
+  height: 413px;
+}
+
+.dashboard {
+  margin-bottom: 10px;
+}
+
+.percentage {
+  font-size: 60px;
+}
+
+.threshold {
+  margin-bottom: 30px;
+}
+
+.threshold .text {
+  font-weight: bold;
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.threshold input {
+  font-size: 20px;
+}
+
+/* dashboard.html */
+
+.back {
+  margin-bottom: 10px;
+}
+
+/* general */
+.nav {
+  float: right;
+}
+
+a {
+  text-decoration: none;
 }

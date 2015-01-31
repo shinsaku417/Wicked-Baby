@@ -15,7 +15,7 @@ var session = require('express-session');
 var db = require('./app.js');
 var keys = require('./config.js');//contains api keys for github login
 
-//EXAMPLE OF PASSPORT IN ACTION: 
+//EXAMPLE OF PASSPORT IN ACTION:
 
 //https://github.com/jaredhanson/passport-github/blob/master/examples/login/app.js
 var passport = require('passport');
@@ -82,17 +82,17 @@ function(req, res){
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the student login page.
-app.get('/github/callback', 
+app.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
     if (isTeacher(req.user.displayName, teachers)) {
-      createUser(req.user.displayName, db.Teacher);  
+      createUser(req.user.displayName, db.Teacher);
       res.redirect('/teacher');
     } else {
       createUser(req.user.displayName, db.Student);
       res.redirect('/student/*');
     }
-    
+
   });
 
 app.get('/logout', function(req, res){
@@ -216,11 +216,13 @@ var getUsersEmails = function(username, accessToken) {
 
   request(options, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      console.log(response); 
-    } 
+      console.log(response);
+    }
     console.log(response.statusCode)
-  })  
+  })
 };
 
 
 
+
+}

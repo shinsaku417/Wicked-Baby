@@ -5,12 +5,15 @@
     <title>wickedBaby</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <!-- <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"> -->
+    <link rel="stylesheet" href="../client/styles/style.css">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
   </head>
   <body ng-controller="MainCtrl">
-    <!-- <div ng-view></div> -->    
-    <form action="/login" method="post">
-      <button type="submit">Login with Github</button>
+    <!-- <div ng-view></div> -->
+    <form class="container" action="/login" method="post">
+      <h1>Diss-No-Sense</h1>
+      <img src="../client/assets/thumbs.png" class="thumb"><br>
+      <button class="loginbutton btn btn-primary btn-lg" type="submit">Login with Github</button>
     </form>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>

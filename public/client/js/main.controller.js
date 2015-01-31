@@ -9,7 +9,7 @@ angular.module('wickedBaby', [])
       socket.emit(personLogin);
       LoginFactory.login(person);
     };
-    
+
     // Call emitMessage when a student logs in
     $scope.studentLogin = function(){
       $scope.emitMessage('student');
@@ -36,7 +36,7 @@ angular.module('wickedBaby', [])
 
     // When 'I'm good now' button is clicked
     $scope.cancel = function() {
-      // emit 'not confused' event and student's github usernameto the server 
+      // emit 'not confused' event and student's github usernameto the server
       socket.emit('not confused', {username: username});
     };
 
@@ -44,7 +44,6 @@ angular.module('wickedBaby', [])
       var confused = document.getElementsByClassName('confused')[0];
       var cancel = document.getElementsByClassName('cancel')[0];
       // Enable 'I'm confused :(' button
-      confused.className = "confused enabled";
       confused.disabled = false;
       // Disable 'I'm good now' button
       cancel.disabled = true;
@@ -56,7 +55,6 @@ angular.module('wickedBaby', [])
       var confused = document.getElementsByClassName('confused')[0];
       var cancel = document.getElementsByClassName('cancel')[0];
       // disable 'I'm confused :(' button
-      confused.className = "confused disabled";
       confused.disabled = true;
       // enable 'I'm good now' button
       cancel.disabled = false;
@@ -77,9 +75,25 @@ angular.module('wickedBaby', [])
     // If counter exists in teacher's localStorage, set counter to the existing value. Else, set counter to 0
     $scope.counter = localStorage["confusedCounter"] || 0;
 
-    // Set the default confusion threshold. If the proportion of students in the class who have clicked 'I'm confused :(' exceeds 
+    // Set the default confusion threshold. If the proportion of students in the class who have clicked 'I'm confused :(' exceeds
     // the threshold value, the teacher will be alerted.
     $scope.threshold = 50;
+
+    // Sends an error when threshold is above 100 or below 0
+    // This is called whenever teacher changes the threshold
+    $scope.check = function() {
+      if ($scope.threshold > 100 || $scope.threshold < 0) {
+        swal({
+          title: "Error!",
+          text: "Threshold must be between 0-100!",
+          confirmButtonText: "I understand"
+        },
+        function() {
+          // Resets the threshold once teacher presses I understand
+          $scope.threshold = 50;
+        });
+      }
+    };
 
     // Track the confused status of students
     var studentConfusedStatus = {};
@@ -97,10 +111,19 @@ angular.module('wickedBaby', [])
       $scope.confusionRate = ($scope.counter / 60).toFixed(4);
       $scope.percentage = $scope.confusionRate * 100 + "%";
     }
-    
+
     // Initialize the confusion rate and percentage
     confusionCalculator();
-    
+
+    setInterval(function() {
+      $scope.$apply(function() {
+        $scope.counter++;
+        confusionCalculator();
+        $scope.degree = $scope.confusionRate * 180;
+        document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
+      });
+    }, 1000);
+
     // Listen to 'add' event emitted by the server
     socket.on('add', function(username) {
       // If the student has NOT previously clicked on the 'I'm confused :(' button
@@ -115,11 +138,11 @@ angular.module('wickedBaby', [])
           localStorage["confusedCounter"] = $scope.counter;
           confusionCalculator();
           $scope.degree = $scope.confusionRate * 180;
-          document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
+          document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
         });
-        
+
         // If confusion rate rises above the threshold, (sweet) alert the teacher
-        if ($scope.percentage > $scope.threshold) {
+        if ($scope.percentage >= $scope.threshold) {
           swal({
             title: "Confused!",
             text: "Students are confused!",
@@ -129,22 +152,22 @@ angular.module('wickedBaby', [])
           function() {
             // Emit 'confusion resolved' message to server
             socket.emit("confusion resolved");
-            // 
+            //
             $scope.$apply(function() {
               // reset the counter to 0, update the confusion rate, and rotate the thumb image based on the updated confusion rate.
               $scope.counter = 0;
               localStorage["confusedCounter"] = $scope.counter;
               confusionCalculator();
               $scope.degree = $scope.confusionRate * 180;
-              document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
+              document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
             });
 
-            // reset the confused status of all students 
+            // reset the confused status of all students
             for(var key in studentConfusedStatus){
               studentConfusedStatus[key] = false;
             }
           });
-        }  
+        }
       }
 
     });
@@ -161,8 +184,8 @@ angular.module('wickedBaby', [])
           localStorage["confusedCounter"] = $scope.counter;
           confusionCalculator();
           $scope.degree = $scope.confusionRate * 180;
-          document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
-        }); 
+          document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
+        });
       }
 
     });
@@ -231,14 +254,14 @@ angular.module('wickedBaby', [])
     var margin = 25;
     var scale = 6;
     var url = 'test';
-    
+
     // create an svg canvas
     var svg = d3.select("body")
                 .append("svg")
                 .attr("width", w)
                 .attr("height", h)
                 .style("background-color", bgColor);
-  
+
     // perform a GET request to the server and returns a dataset containing student names and confused variables
     var fetchData = function(){
       return $http({
@@ -248,7 +271,7 @@ angular.module('wickedBaby', [])
     };
 
     var render = function(){
-      // create a rectangular block whose height is directly proportional to the number of 'I'm confused :(' clicks for each student 
+      // create a rectangular block whose height is directly proportional to the number of 'I'm confused :(' clicks for each student
       svg.selectAll("rect")
         .data(dataset)
         .enter()
@@ -281,7 +304,7 @@ angular.module('wickedBaby', [])
           return h - (d.confused * scale) - 10;
         })
         .attr("text-anchor", "middle");
-      
+
       // display the number of 'I'm confused :(' clicks inside of each student's rectangular block
       svg.selectAll(".num")
         .data(dataset)
@@ -306,11 +329,3 @@ angular.module('wickedBaby', [])
     };
 
   });
-
-
-
-
-
-
-
-
