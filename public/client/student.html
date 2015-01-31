@@ -5,14 +5,14 @@
     <title>Hello Student!</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" type="text/css" href="../client/styles/style.css">
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../client/styles/style.css">
   </head>
   <body ng-controller="StudentCtrl">
     <!-- <div ng-view></div> -->
     <div class="container">
-      <button type="button" ng-click="confused()" class="btn btn-danger btn-lg confused"> I'm confused :( </button>
-      <button type="button" ng-click="cancel()" class="btn btn-success btn-lg cancel" disabled> I'm good now </button>
+      <button type="button" ng-click="confused()" class="btn btn-danger btn-lg btn-circle confused"> I'm confused :( </button>
+      <button type="button" ng-click="cancel()" class="btn btn-success btn-lg btn-circle cancel" disabled> I'm good now :) </button>
     </div>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
