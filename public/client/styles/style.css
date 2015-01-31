@@ -1,3 +1,4 @@
+/* index.html */
 .container {
   position: fixed;
   top: 40%;
@@ -12,18 +13,11 @@
   margin-right: auto;
 }
 
-.thumb-teacher {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 275px;
-  height: 413px;
-}
-
 .loginbutton {
   display: block;
 }
 
+/* student.html */
 .btn-circle {
   width: 200px;
   height: 200px;
@@ -35,6 +29,7 @@
   margin: 0px 50px 0px 50px;
 }
 
+/* teacher.html */
 .container-teacher {
   position: fixed;
   top: 50%;
@@ -43,8 +38,12 @@
   text-align:center;
 }
 
-.nav {
-  float: right;
+.thumb-teacher {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 275px;
+  height: 413px;
 }
 
 .dashboard {
@@ -67,6 +66,17 @@
 
 .threshold input {
   font-size: 20px;
+}
+
+/* dashboard.html */
+
+.back {
+  margin-bottom: 10px;
+}
+
+/* general */
+.nav {
+  float: right;
 }
 
 a {
