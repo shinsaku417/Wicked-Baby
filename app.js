@@ -24,15 +24,21 @@ db
 
       //defines a Student model
       exports.Student = db.define('Student', {
-        username: Sequelize.STRING,
-        password: Sequelize.STRING
-      })
+        displayName: Sequelize.STRING,
+        confusionCount: {
+          type: Sequelize.INTEGER,
+          defaultValue: 0 //sets default count to 0 when a new student is created in the Students table
+        }      
+      });
+      //defines a Teacher model
+      exports.Teacher = db.define('Teacher', {
+        displayName: Sequelize.STRING,
+      });
       exports.Student.sync() //syncs the model with the database. This creates the Students table.
     }
   })
 
-
-
+ 
 exports.db = db;
 
 

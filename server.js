@@ -3,6 +3,9 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+////////////////////////////////////////////////////
+var request = require('request');//simplified HTTP request client
+
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 
@@ -81,7 +84,8 @@ function(req, res){
 app.get('/github/callback', 
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
-    createUser(req.user.displayName, req.user.id, db.Student);
+    var emails = getUsersEmails(req.user.username);
+    //createUser(req.user.displayName, req.user.id, db.Student);
     res.redirect('/student/*');
   });
 
@@ -168,11 +172,15 @@ io.on('connection', function (socket) {
 
 
 //////////////////HELPER FUNCTIONS///////////////////////
-var createUser = function(username, password, model){
+
+var isTeacher = function(email){
+  return email.indexOf('@hackreactor.com') > -1;
+};
+
+var createUser = function(displayName, model){
   model
   .create({
-    username: username,
-    password: password
+    displayName: displayName
   })
   .complete(function(err, user) {
     if(err){
@@ -181,7 +189,14 @@ var createUser = function(username, password, model){
       console.log('user is saved! ' + user)
     }
   })
-}
+};
 
-
+var getUsersEmails = function(username) {
+  request('https://api.github.com/users:' + username, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      console.log(response); 
+    } 
+    console.log(response.statusCode)
+  })  
+};
 
