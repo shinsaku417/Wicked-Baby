@@ -220,7 +220,7 @@ var getUsersEmails = function(username, accessToken) {
     }
     console.log(response.statusCode)
   })
-};
+
 
 
 
