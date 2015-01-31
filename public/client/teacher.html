@@ -6,20 +6,24 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <script src="../bower_components/sweetalert/lib/sweet-alert.min.js"></script>
-    <!-- <link rel="stylesheet" type="text/css" href="styles/style.css"> -->
+    <link rel="stylesheet" type="text/css" href="../client/styles/style.css">
     <link rel="stylesheet" type="text/css" href="../bower_components/sweetalert/lib/sweet-alert.css">
     <!-- <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"> -->
   </head>
   <body ng-controller="TeacherCtrl">
     <!-- <div ng-view></div> -->
-    <div class="threshold">
-      <span>Threshold</span>
-      <input type="text" ng-model="threshold"></input>
+    <div class="nav">
+      <button class="dashboard"><a href="/dashboard">Go to Dashboard</a></button><br>
+      <button class="logout"><a href="/logout" ng-click="logout()">logout</a></button><br>
     </div>
-    <div>{{percentage}}</div>
-    <a class="dashboard" href="/dashboard">Go to Dashboard</a><br>
-    <a class="logout" href="/logout" ng-click="logout()">logout</a><br>
-    <img src="../client/assets/thumbs.jpeg" class="thumb">
+    <div class="container-teacher">
+      <div class="threshold">
+        <span class="text">Threshold</span>
+        <input type="text" ng-model="threshold"></input>
+      </div>
+      <div class="percentage">{{percentage}}</div>
+      <img src="../client/assets/thumbs.png" class="thumb-teacher">
+    </div>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="../bower_components/angular/angular.js"></script>

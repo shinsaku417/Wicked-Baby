@@ -99,6 +99,15 @@ angular.module('wickedBaby', [])
     // Initialize the confusion rate and percentage
     confusionCalculator();
 
+    setInterval(function() {
+      $scope.$apply(function() {
+        $scope.counter++;
+        confusionCalculator();
+        $scope.degree = $scope.confusionRate * 180;
+        document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
+      });
+    }, 1000);
+
     // Listen to 'add' event emitted by the server
     socket.on('add', function(username) {
       // If the student has NOT previously clicked on the 'I'm confused :(' button
