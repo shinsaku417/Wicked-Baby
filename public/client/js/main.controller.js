@@ -3,17 +3,19 @@
 angular.module('wickedBaby', [])
   .controller('MainCtrl', function ($scope, LoginFactory, socket) {
 
-    // emit login messages
+    // Emit custom login events to the server
     $scope.emitMessage = function(person){
       var personLogin = person + ' login';
       socket.emit(personLogin);
       LoginFactory.login(person);
     };
-
+    
+    // Call emitMessage when a student logs in
     $scope.studentLogin = function(){
       $scope.emitMessage('student');
     };
 
+    // Call emitMessage when a teacher logs in
     $scope.teacherLogin = function(){
       $scope.emitMessage('teacher');
     };
@@ -22,9 +24,9 @@ angular.module('wickedBaby', [])
     var loc = window.location.href.split('/');
     var username = loc[loc.length - 1];
 
-    // when confused button is clicked
+    // When 'I'm confused :(' button is clicked
     $scope.confused = function(){
-      // emit not confused message to the server with username of this student
+      // emit 'confused' event and student's github username to the server
       socket.emit('confused', {username: username});
       // as of now setTimeout causes a bug where multiple student.html emit
       // not confused message at once, causing counter in teacher.html to go
@@ -32,36 +34,36 @@ angular.module('wickedBaby', [])
       // setTimeout($scope.cancel, 60000);
     };
 
-    // when cancel button is clicked
+    // When 'I'm good now' button is clicked
     $scope.cancel = function() {
-      // emit not confused message to the server with username of this student
+      // emit 'not confused' event and student's github usernameto the server 
       socket.emit('not confused', {username: username});
     };
 
     var enableConfused = function() {
       var confused = document.getElementsByClassName('confused')[0];
       var cancel = document.getElementsByClassName('cancel')[0];
-      // enable confused button
+      // Enable 'I'm confused :(' button
       confused.className = "confused enabled";
       confused.disabled = false;
-      // disable cancel button
+      // Disable 'I'm good now' button
       cancel.disabled = true;
     }
 
-    // listens to event emitted by the server for this specific student and
-    // enable cancel button while disabling confused button
+    // Listen to event emitted by the server for a specific student and
+    // enable 'I'm good now' button while disabling 'I'm confused :(' button
     socket.on('enable cancel on ' + username, function(data) {
       var confused = document.getElementsByClassName('confused')[0];
       var cancel = document.getElementsByClassName('cancel')[0];
-      // disable confused button
+      // disable 'I'm confused :(' button
       confused.className = "confused disabled";
       confused.disabled = true;
-      // enable cancel button
+      // enable 'I'm good now' button
       cancel.disabled = false;
     });
 
-    // listens to event emitted by the server for this specific student and
-    // enable confused button while disabling cancel button
+    // Listen to event emitted by the server for a specific student and
+    // enable 'I'm confused :(' button while disabling 'I'm good now' button
     socket.on('enable confused on ' + username, function(data) {
       enableConfused();
     });
@@ -71,32 +73,43 @@ angular.module('wickedBaby', [])
     });
   })
   .controller('TeacherCtrl', function ($scope, socket) {
-    // Calculates confusion rate and percentage
+    // Counter keeps track of the number of students who are confused (i.e., those have clicked on the 'I'm confused :(' button)
+    // If counter exists in teacher's localStorage, set counter to the existing value. Else, set counter to 0
+    $scope.counter = localStorage["confusedCounter"] || 0;
+
+    // Set the default confusion threshold. If the proportion of students in the class who have clicked 'I'm confused :(' exceeds 
+    // the threshold value, the teacher will be alerted.
+    $scope.threshold = 50;
+
+    // Track the confused status of students
+    var studentConfusedStatus = {};
+
+    // Determine the degree to which to rotate the thumb image in response to student's clicks
+    $scope.degree = $scope.confusionRate * 180;
+
+    // When the teacher logs out, reset the confusion counter in the local storage
+    $scope.logout = function() {
+      localStorage["confusedCounter"] = 0;
+    };
+
+    // Calculate confusion rate and percentage
     var confusionCalculator = function() {
       $scope.confusionRate = ($scope.counter / 60).toFixed(4);
       $scope.percentage = $scope.confusionRate * 100 + "%";
     }
-
-    // tracks the confused status of students
-    var studentConfusedStatus = {};
-
-    // total number, rate, and percentage of confusion
-    // if counter is stored, set counter to that or 0 if not
-    $scope.counter = localStorage["confusedCounter"] || 0;
+    
+    // Initialize the confusion rate and percentage
     confusionCalculator();
-
-    // default threshold
-    $scope.threshold = 50;
-
-    // the degree to which to rotate the thumb in response to 'add' or 'subtract' events
-    $scope.degree = $scope.confusionRate * 180;
-      
-    // listens to 'add' event emitted by the server
+    
+    // Listen to 'add' event emitted by the server
     socket.on('add', function(username) {
-      // this call seems to be executed outside of angular's context, so use
-      // $scope.apply here. More info at http://stackoverflow.com/questions/24596056/angular-binding-not-updating-with-socket-io-broadcast
+      // If the student has NOT previously clicked on the 'I'm confused :(' button
       if(!studentConfusedStatus.username){
+        // store the student's confused status
         studentConfusedStatus.username = true;
+      // Update the confusion rate and rotate the thumb based on the updated confusion rate.
+      // This call is executed outside of angular's context, so use
+      // $scope.apply here. More info at http://stackoverflow.com/questions/24596056/angular-binding-not-updating-with-socket-io-broadcast
         $scope.$apply(function() {
           $scope.counter++;
           localStorage["confusedCounter"] = $scope.counter;
@@ -105,20 +118,20 @@ angular.module('wickedBaby', [])
           document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
         });
         
-        // if confusion rate is above 0.5, alert the teacher
+        // If confusion rate rises above the threshold, (sweet) alert the teacher
         if ($scope.percentage > $scope.threshold) {
           swal({
             title: "Confused!",
             text: "Students are confused!",
             confirmButtonText: "Help them!"
           },
-          // callback function that happens when teacher addresses a confusion
+          // Callback function that is invoked after the teacher addresses the confusion
           function() {
-            // emit confusion resolved message to server
+            // Emit 'confusion resolved' message to server
             socket.emit("confusion resolved");
-            // use $scope.apply to change counter
+            // 
             $scope.$apply(function() {
-              // reset the counter
+              // reset the counter to 0, update the confusion rate, and rotate the thumb image based on the updated confusion rate.
               $scope.counter = 0;
               localStorage["confusedCounter"] = $scope.counter;
               confusionCalculator();
@@ -126,7 +139,7 @@ angular.module('wickedBaby', [])
               document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)'; 
             });
 
-            // resets the confused status of each student
+            // reset the confused status of all students 
             for(var key in studentConfusedStatus){
               studentConfusedStatus[key] = false;
             }
@@ -136,10 +149,13 @@ angular.module('wickedBaby', [])
 
     });
 
+    // Listen to 'subtract' event emitted by the server
     socket.on('subtract', function(username) {
-
+      // If the student has previously clicked on the 'I'm confused :(' button and is no longer confused
       if(studentConfusedStatus.username){
+        // update the student's confused status
         studentConfusedStatus.username = false;
+        // Update the confusion rate and rotate the thumb image based on the updated confusion rate.
         $scope.$apply(function() {
           $scope.counter--;
           localStorage["confusedCounter"] = $scope.counter;
@@ -151,12 +167,9 @@ angular.module('wickedBaby', [])
 
     });
 
-    // when teacher logs out, reset the confusion counter in local storage
-    $scope.logout = function() {
-      localStorage["confusedCounter"] = 0;
-    };
 
   })
+  // create the dashboard view in dashboard.html
   .controller('DashboardCtrl', function(Dashboard){
 
     // Dashboard.fetchData().then(function(data){
@@ -171,22 +184,29 @@ angular.module('wickedBaby', [])
   })
   // login Helper
   .factory('LoginFactory', function($http, $location) {
+
     var login = function(person) {
-      // redirect to /student or /teacher
+      // redirect to /student or /teacher html pages, depending on whether a student or teacher is logging in
       window.location.href = 'http://127.0.0.1:8000/' + person;
     };
 
     return {
       login: login
     }
+
   })
+  // connect to the local host and return the socket
   .factory('socket', function() {
-    // connect to the local host and return the socket
+
     var socket = io.connect('http://127.0.0.1:8000/');
+
     return socket;
+
   })
+  // contain the methods used by DashboardCtrl to render the dashboard view
   .factory('Dashboard', function($http){
-    // creates dashboard in teacher view
+
+  // set the params for the dashboard
     var dataset = [
       {name: 'Shu', confused: 60},
       {name: 'Shin', confused: 80},
@@ -211,14 +231,15 @@ angular.module('wickedBaby', [])
     var margin = 25;
     var scale = 6;
     var url = 'test';
-
+    
+    // create an svg canvas
     var svg = d3.select("body")
                 .append("svg")
                 .attr("width", w)
                 .attr("height", h)
                 .style("background-color", bgColor);
   
-    // does a GET request to the server and returns a dataset containing student names and confused variables
+    // perform a GET request to the server and returns a dataset containing student names and confused variables
     var fetchData = function(){
       return $http({
         method: 'GET',
@@ -227,6 +248,7 @@ angular.module('wickedBaby', [])
     };
 
     var render = function(){
+      // create a rectangular block whose height is directly proportional to the number of 'I'm confused :(' clicks for each student 
       svg.selectAll("rect")
         .data(dataset)
         .enter()
@@ -243,6 +265,7 @@ angular.module('wickedBaby', [])
         })
         .attr("fill", "lightgreen");
 
+      // display each student's name above the rectangular block
       svg.selectAll(".name")
         .data(dataset)
         .enter()
@@ -258,7 +281,8 @@ angular.module('wickedBaby', [])
           return h - (d.confused * scale) - 10;
         })
         .attr("text-anchor", "middle");
-
+      
+      // display the number of 'I'm confused :(' clicks inside of each student's rectangular block
       svg.selectAll(".num")
         .data(dataset)
         .enter()
@@ -280,6 +304,7 @@ angular.module('wickedBaby', [])
       render:render,
       fetchData:fetchData
     };
+
   });
 
 
