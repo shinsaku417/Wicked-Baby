@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var teachers = require('./config.js').teachers;
 
 ////////////////////////////////////////////////////
 var request = require('request');//simplified HTTP request client
@@ -84,9 +85,14 @@ function(req, res){
 app.get('/github/callback', 
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
-    var emails = getUsersEmails(req.user.username);
-    //createUser(req.user.displayName, req.user.id, db.Student);
-    res.redirect('/student/*');
+    if (isTeacher(req.user.displayName, teachers)) {
+      createUser(req.user.displayName, db.Teacher);  
+      res.redirect('/teacher');
+    } else {
+      createUser(req.user.displayName, db.Student);
+      res.redirect('/student/*');
+    }
+    
   });
 
 app.get('/logout', function(req, res){
@@ -173,11 +179,17 @@ io.on('connection', function (socket) {
 
 //////////////////HELPER FUNCTIONS///////////////////////
 
-var isTeacher = function(email){
-  return email.indexOf('@hackreactor.com') > -1;
+var isTeacher = function(displayName, teachers){
+  for (var teacher in teachers) {
+    if (teachers[teacher] === displayName){
+      return true;
+    }
+  }
+  return false;
 };
 
 var createUser = function(displayName, model){
+  console.log('////////MODEL', model);
   model
   .create({
     displayName: displayName
@@ -191,12 +203,24 @@ var createUser = function(displayName, model){
   })
 };
 
-var getUsersEmails = function(username) {
-  request('https://api.github.com/users:' + username, function (error, response, body) {
+var getUsersEmails = function(username, accessToken) {
+  var options = {
+    headers: {
+      'User-Agent':    'JavaScript.ru',
+      'Authorization': 'token ' + accessToken
+    },
+
+    json:    true,
+    url:  'https://api.github.com/users:' + username //  'https://api.github.com/user/emails'
+  };
+
+  request(options, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       console.log(response); 
     } 
     console.log(response.statusCode)
   })  
 };
+
+
 

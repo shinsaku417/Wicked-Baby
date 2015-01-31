@@ -35,6 +35,7 @@ db
         displayName: Sequelize.STRING,
       });
       exports.Student.sync() //syncs the model with the database. This creates the Students table.
+      exports.Teacher.sync()
     }
   })
 
