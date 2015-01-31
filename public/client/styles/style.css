@@ -6,9 +6,20 @@
   background-color: red;
 }
 
-.thumb {
-  -ms-transform: rotate(90deg); /* IE 9 */
-  -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
-  transform: rotate(90deg);
+.login {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align:center;
+}
 
+.thumb {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.loginbutton {
+  display: block;
 }
