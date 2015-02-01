@@ -161,6 +161,8 @@ app.get('/teacher', function(req, res){
 io.on('connection', function (socket) {
   // server listens to confused event emitted by the student client
   socket.on('confused', function (data) {
+    console.log(data);
+    utils.incrementConfuseCount('Ryan McCarter', db.Student)
     // emits the add message to all the clients
     io.sockets.emit('add');
     // emits a message that will be listened by specific student

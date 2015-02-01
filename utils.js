@@ -24,6 +24,27 @@ exports.createUser = function(displayName, model){
   })
 };
 
+
+exports.incrementConfuseCount = function(displayName, model){
+  model
+  .find({ where: { displayName: displayName } })
+  .complete(function(err, student) {
+    if(err){
+      console.log('error: ' + err)
+    } else{
+      //increment the count here
+      var currentCount = student.dataValues.confusionCount;
+      var updatedCount = currentCount++;
+      student.updateAttributes({
+        confusionCount: updatedCount
+      }).success(function(data){
+        //console.log(data);
+      })
+    }
+  })
+}
+
+
 //Not used in current implementation
 var getUsersEmails = function(username, accessToken) {
   var options = {
