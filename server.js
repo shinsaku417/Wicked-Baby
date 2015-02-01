@@ -3,6 +3,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var teachers = require('./config.js').teachers;
+var utils = require('./utils.js');
 
 ////////////////////////////////////////////////////
 var request = require('request');//simplified HTTP request client
@@ -85,14 +86,26 @@ function(req, res){
 app.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
-    if (isTeacher(req.user.displayName, teachers)) {
-      createUser(req.user.displayName, db.Teacher);
-      res.redirect('/teacher');
-    } else {
-      createUser(req.user.displayName, db.Student);
-      res.redirect('/student/*');
-    }
+    if (utils.isTeacher(req.user.displayName, teachers)) {
+      utils.userExistsInDB(req.user.username, db.Teacher).then(function(data) {
+        if (data) {
+          res.redirect('/teacher');
+        } else {
+          utils.createUser(req.user.username, req.user.displayName, db.Teacher);
+          res.redirect('/teacher');
+        }
+      })
 
+    } else {
+      utils.userExistsInDB(req.user.username, db.Student).then(function(data) {
+        if (data) {
+          res.redirect('/student/*');
+        } else {
+          utils.createUser(req.user.username, req.user.displayName, db.Student);
+          res.redirect('/student/*');
+        }
+      })
+    }
   });
 
 app.get('/logout', function(req, res){
@@ -110,7 +123,6 @@ app.get('/', function(req, res){
 
   // placeholder object that will be replaced once database is implemented
   var obj = {
-    Gsirius: true,
     kchia: true,
     mccarter: true,
     shinsaku417: true
@@ -126,6 +138,11 @@ app.get('/', function(req, res){
     res.sendFile(path);
   }
 });
+
+app.get('/dashboard', function(req, res) {
+  var path = __dirname + '/public/client/dashboard.html';
+  res.sendFile(path);
+})
 
 app.post('/login', function(req, res){
   res.redirect('/github');
@@ -155,6 +172,9 @@ app.get('/teacher', function(req, res){
 io.on('connection', function (socket) {
   // server listens to confused event emitted by the student client
   socket.on('confused', function (data) {
+    //console.log(data);
+    console.log('incrementConfuseCount was called');
+    utils.incrementConfuseCount(data.username, db.Student);
     // emits the add message to all the clients
     io.sockets.emit('add');
     // emits a message that will be listened by specific student
@@ -175,54 +195,3 @@ io.on('connection', function (socket) {
     io.sockets.emit('resolved');
   });
 });
-
-
-//////////////////HELPER FUNCTIONS///////////////////////
-
-var isTeacher = function(displayName, teachers){
-  for (var teacher in teachers) {
-    if (teachers[teacher] === displayName){
-      return true;
-    }
-  }
-  return false;
-};
-
-var createUser = function(displayName, model){
-  console.log('////////MODEL', model);
-  model
-  .create({
-    displayName: displayName
-  })
-  .complete(function(err, user) {
-    if(err){
-      console.log('error: ' + err)
-    } else{
-      console.log('user is saved! ' + user)
-    }
-  })
-};
-
-var getUsersEmails = function(username, accessToken) {
-  var options = {
-    headers: {
-      'User-Agent':    'JavaScript.ru',
-      'Authorization': 'token ' + accessToken
-    },
-
-    json:    true,
-    url:  'https://api.github.com/users:' + username //  'https://api.github.com/user/emails'
-  };
-
-  request(options, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      console.log(response);
-    }
-    console.log(response.statusCode)
-  })
-};
-
-
-
-
-}
