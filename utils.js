@@ -10,9 +10,10 @@ exports.isTeacher = function(displayName, teachers){
   return false;
 };
 
-exports.createUser = function(displayName, model){
+exports.createUser = function(username, displayName, model){
   model
   .create({
+    username: username,
     displayName: displayName
   })
   .complete(function(err, user) {
@@ -25,16 +26,16 @@ exports.createUser = function(displayName, model){
 };
 
 
-exports.incrementConfuseCount = function(displayName, model){
+exports.incrementConfuseCount = function(username, model){
   model
-  .find({ where: { displayName: displayName } })
+  .find({ where: { username: username } })
   .complete(function(err, student) {
     if(err){
       console.log('error: ' + err)
     } else{
       //increment the count here
       var currentCount = student.dataValues.confusionCount;
-      var updatedCount = currentCount++;
+      var updatedCount = currentCount += 1;
       student.updateAttributes({
         confusionCount: updatedCount
       }).success(function(data){
