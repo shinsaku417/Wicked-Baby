@@ -86,17 +86,25 @@ function(req, res){
 app.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
-    console.log('//////////////////////', utils.userExistsInDB(req.user.username, db.Student))
-    if (utils.isTeacher(req.user.username, req.user.displayName, teachers)) {
-      if(!utils.userExistsInDB(req.user.username, db.Teacher)){
-        utils.createUser(req.user.displayName, db.Teacher);  
-        res.redirect('/teacher');
-      }
+    if (utils.isTeacher(req.user.displayName, teachers)) {
+      utils.userExistsInDB(req.user.username, db.Teacher).then(function(data) {
+        if (data) {
+          res.redirect('/teacher');
+        } else {
+          utils.createUser(req.user.username, req.user.displayName, db.Teacher);
+          res.redirect('/teacher');
+        }
+      })
+
     } else {
-      if(!utils.userExistsInDB(req.user.username, db.Student)){
-        utils.createUser(req.user.username, req.user.displayName, db.Student);
-        res.redirect('/student/*');
-      }
+      utils.userExistsInDB(req.user.username, db.Student).then(function(data) {
+        if (data) {
+          res.redirect('/student/*');
+        } else {
+          utils.createUser(req.user.username, req.user.displayName, db.Student);
+          res.redirect('/student/*');
+        }
+      })
     }
   });
 
@@ -115,7 +123,6 @@ app.get('/', function(req, res){
 
   // placeholder object that will be replaced once database is implemented
   var obj = {
-    Gsirius: true,
     kchia: true,
     mccarter: true,
     shinsaku417: true
@@ -166,7 +173,8 @@ io.on('connection', function (socket) {
   // server listens to confused event emitted by the student client
   socket.on('confused', function (data) {
     //console.log(data);
-    utils.incrementConfuseCount(data.username, db.Student)
+    console.log('incrementConfuseCount was called');
+    utils.incrementConfuseCount(data.username, db.Student);
     // emits the add message to all the clients
     io.sockets.emit('add');
     // emits a message that will be listened by specific student
