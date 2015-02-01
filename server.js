@@ -86,14 +86,18 @@ function(req, res){
 app.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
+    console.log('//////////////////////', utils.userExistsInDB(req.user.username, db.Student))
     if (utils.isTeacher(req.user.username, req.user.displayName, teachers)) {
-      utils.createUser(req.user.displayName, db.Teacher);  
-      res.redirect('/teacher');
+      if(!utils.userExistsInDB(req.user.username, db.Teacher)){
+        utils.createUser(req.user.displayName, db.Teacher);  
+        res.redirect('/teacher');
+      }
     } else {
-      utils.createUser(req.user.username, req.user.displayName, db.Student);
-      res.redirect('/student/*');
+      if(!utils.userExistsInDB(req.user.username, db.Student)){
+        utils.createUser(req.user.username, req.user.displayName, db.Student);
+        res.redirect('/student/*');
+      }
     }
-
   });
 
 app.get('/logout', function(req, res){
@@ -162,7 +166,6 @@ io.on('connection', function (socket) {
   // server listens to confused event emitted by the student client
   socket.on('confused', function (data) {
     //console.log(data);
-    console.log('////////////////////////////////////', data.username)
     utils.incrementConfuseCount(data.username, db.Student)
     // emits the add message to all the clients
     io.sockets.emit('add');

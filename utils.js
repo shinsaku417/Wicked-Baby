@@ -25,6 +25,24 @@ exports.createUser = function(username, displayName, model){
   })
 };
 
+exports.userExistsInDB = function(value, model){
+  var hasData = false;
+  return model
+    .find({ where: { username: value } })
+    .complete(function(err, data) {
+      if(err){
+        console.log('error: ' + err)
+      } else{
+        console.log('//////////////////////////////////////// COMPLETEEEEE');
+        hasData = true;
+      }
+    })
+    .success(function(data){
+      //console.log(data);
+      return true;
+    })
+    //return hasData;
+}
 
 exports.incrementConfuseCount = function(username, model){
   model
@@ -37,7 +55,7 @@ exports.incrementConfuseCount = function(username, model){
       var currentCount = student.dataValues.confusionCount;
       var updatedCount = currentCount += 1;
       student.updateAttributes({
-        confusionCount: updatedCount
+        confusionCout: updatedCount
       }).success(function(data){
         //console.log(data);
       })
