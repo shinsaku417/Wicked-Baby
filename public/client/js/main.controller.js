@@ -144,9 +144,9 @@ angular.module('wickedBaby', [])
         // If confusion rate rises above the threshold, (sweet) alert the teacher
         if ($scope.percentage >= $scope.threshold) {
           swal({
-            title: "Confused!",
-            text: "Students are confused!",
-            confirmButtonText: "Help them!"
+            title: "Students are Confused!",
+            text: "After you've helped them, click 'Resolved'",
+            confirmButtonText: "Resolved!"
           },
           // Callback function that is invoked after the teacher addresses the confusion
           function() {
