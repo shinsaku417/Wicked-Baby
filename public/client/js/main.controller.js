@@ -2,7 +2,7 @@
 
 angular.module('wickedBaby', [])
   .controller('MainCtrl', function ($scope, LoginFactory, socket) {
-
+    console.log('this is a console TESTTTTTTTTTTTTT')
     // Emit custom login events to the server
     $scope.emitMessage = function(person){
       var personLogin = person + ' login';
