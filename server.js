@@ -1,5 +1,5 @@
 var express = require('express');
-var app = express();
+var app = express(); //initializes express application
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var teachers = require('./config.js').teachers;
@@ -15,6 +15,7 @@ var session = require('express-session');
 
 var db = require('./app.js');
 var keys = require('./config.js');//contains api keys for github login
+var port = process.env.PORT || 8000;
 
 //EXAMPLE OF PASSPORT IN ACTION:
 
@@ -56,7 +57,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new GitHubStrategy({
   clientID: keys.GITHUB_CLIENT_ID,
   clientSecret: keys.GITHUB_CLIENT_SECRET,
-  callbackURL: "http://localhost:8000/github/callback"
+  callbackURL: process.env.host + ":" + port + "/github/callback"
 },
 function(accessToken, refreshToken, profile, done) {
   // asynchronous verification, for effect...
@@ -113,7 +114,8 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-server.listen(8000, function(){
+
+server.listen(port, function(){
   console.log('Listening on port 8000')
 });
 
