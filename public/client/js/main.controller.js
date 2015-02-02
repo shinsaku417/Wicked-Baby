@@ -219,7 +219,7 @@ angular.module('wickedBaby', [])
           localStorage["confusedCounter"] = $scope.counter;
           confusionCalculator();
           $scope.degree = $scope.confusionRate * 180;
-          document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
+          document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
         });
       }
 
