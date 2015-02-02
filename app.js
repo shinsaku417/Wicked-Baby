@@ -4,7 +4,7 @@ var Sequelize = require('sequelize');
 
 var db = new Sequelize('thumbs', 'root', '', {
   dialect: 'sqlite',
-  storage: './server/db/db.sqlite'
+  storage: './db.sqlite'
 });
 
 module.exports = db;
