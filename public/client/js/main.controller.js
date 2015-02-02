@@ -115,48 +115,48 @@ angular.module('wickedBaby', [])
     // Initialize the confusion rate and percentage
     confusionCalculator();
 
-    // For demo purposes only
-    var count = 0;
-    setInterval(function() {
-      if (count < 30) {
-        $scope.$apply(function() {
-          $scope.counter++;
-          confusionCalculator();
-          $scope.degree = $scope.confusionRate * 180;
-          document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
-          count++;
-        });
-      }
-    }, 1000);
+    // // For demo purposes only
+    // var count = 0;
+    // setInterval(function() {
+    //   if (count < 30) {
+    //     $scope.$apply(function() {
+    //       $scope.counter++;
+    //       confusionCalculator();
+    //       $scope.degree = $scope.confusionRate * 180;
+    //       document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
+    //       count++;
+    //     });
+    //   }
+    // }, 1000);
 
-    // For demo purposes only
-    setTimeout(function() {
-      swal({
-        title: "Students are Confused!",
-        text: "After you've helped them, click 'Resolved'",
-        type: "warning",
-        confirmButtonText: "Resolved!"
-      },
+    // // For demo purposes only
+    // setTimeout(function() {
+    //   swal({
+    //     title: "Students are Confused!",
+    //     text: "After you've helped them, click 'Resolved'",
+    //     type: "warning",
+    //     confirmButtonText: "Resolved!"
+    //   },
       // Callback function that is invoked after the teacher addresses the confusion
-      function() {
-        // Emit 'confusion resolved' message to server
-        socket.emit("confusion resolved");
-        //
-        $scope.$apply(function() {
-          // reset the counter to 0, update the confusion rate, and rotate the thumb image based on the updated confusion rate.
-          $scope.counter = 0;
-          localStorage["confusedCounter"] = $scope.counter;
-          confusionCalculator();
-          $scope.degree = 0;
-          document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
-        });
+    //   function() {
+    //     // Emit 'confusion resolved' message to server
+    //     socket.emit("confusion resolved");
+    //     //
+    //     $scope.$apply(function() {
+    //       // reset the counter to 0, update the confusion rate, and rotate the thumb image based on the updated confusion rate.
+    //       $scope.counter = 0;
+    //       localStorage["confusedCounter"] = $scope.counter;
+    //       confusionCalculator();
+    //       $scope.degree = 0;
+    //       document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
+    //     });
 
-        // reset the confused status of all students
-        for(var key in studentConfusedStatus){
-          studentConfusedStatus[key] = false;
-        }
-      });
-    }, 30000);
+    //     // reset the confused status of all students
+    //     for(var key in studentConfusedStatus){
+    //       studentConfusedStatus[key] = false;
+    //     }
+    //   });
+    // }, 30000);
 
     // Listen to 'add' event emitted by the server
     socket.on('add', function(username) {
