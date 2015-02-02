@@ -110,7 +110,6 @@ app.get('/github/callback',
         }
       })
     }
-    res.redirect('/student/*');
   });
 
 app.get('/logout', function(req, res){
