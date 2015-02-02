@@ -135,7 +135,7 @@ app.get('/', function(req, res){
 
   // if this student exists in our database, redirect them to student/username
   // if not, serve up index.html
-  if (req.user)) {
+  if (req.user) {
     res.redirect('/student/' + req.user.username);
     // else, serve up index.html
   } else {
