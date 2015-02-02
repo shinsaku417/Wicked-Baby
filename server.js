@@ -2,8 +2,8 @@ var express = require('express');
 var app = express(); //initializes express application
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var teachers = require('./config.js').teachers;
-var utils = require('./utils.js');
+var teachers = require(__dirname + '/config.js').teachers;
+var utils = require(__dirname + '/utils.js');
 
 ////////////////////////////////////////////////////
 var request = require('request');//simplified HTTP request client
@@ -13,8 +13,8 @@ var session = require('express-session');
 
 //EXAMPLE OF PASSPORT IN ACTION:
 
-var db = require('./app.js');
-var keys = require('./config.js');//contains api keys for github login
+var db = require(__dirname + '/app.js');
+var keys = require(__dirname + '/config.js');//contains api keys for github login
 var port = process.env.PORT || 8000;
 
 //EXAMPLE OF PASSPORT IN ACTION:
@@ -54,10 +54,13 @@ passport.deserializeUser(function(obj, done) {
 //   Strategies in Passport require a `verify` function, which accept
 //   credentials (in this case, an accessToken, refreshToken, and GitHub
 //   profile), and invoke a callback with a user object.
+console.log(process.env.host);
 passport.use(new GitHubStrategy({
   clientID: keys.GITHUB_CLIENT_ID,
   clientSecret: keys.GITHUB_CLIENT_SECRET,
-  callbackURL: process.env.host + ":" + port + "/github/callback"
+  //callbackURL: process.env.host + ":" + port + "/github/callback"
+  callbackURL: 'http://testingggg.azurewebsites.net/github/callback'
+  //callbackURL: 'http://localhost:8000/github/callback'
 },
 function(accessToken, refreshToken, profile, done) {
   // asynchronous verification, for effect...
@@ -116,7 +119,7 @@ app.get('/logout', function(req, res){
 
 
 server.listen(port, function(){
-  console.log('Listening on port 8000')
+  console.log('Listening on ' + port);
 });
 
 // serve up html files.
@@ -132,7 +135,7 @@ app.get('/', function(req, res){
 
   // if this student exists in our database, redirect them to student/username
   // if not, serve up index.html
-  if (req.user && obj.hasOwnProperty(req.user.username)) {
+  if (req.user) {
     res.redirect('/student/' + req.user.username);
     // else, serve up index.html
   } else {
@@ -178,15 +181,16 @@ io.on('connection', function (socket) {
     console.log('incrementConfuseCount was called');
     utils.incrementConfuseCount(data.username, db.Student);
     // emits the add message to all the clients
-    io.sockets.emit('add');
+    io.sockets.emit('add', data.username);
     // emits a message that will be listened by specific student
+    console.log(data.username, '///////IS CONFUSED');
     io.sockets.emit('enable cancel on ' + data.username);
   });
 
   // when student presses cancel or 60 seconds have passed after pressing the button
   socket.on('not confused', function (data) {
     // emits the subtract message to all the clients
-    io.sockets.emit('subtract');
+    io.sockets.emit('subtract', data.username);
     // emits a message that will be listened by specific student
     io.sockets.emit('enable confused on ' + data.username);
   });

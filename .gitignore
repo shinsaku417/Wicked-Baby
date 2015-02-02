@@ -6,6 +6,6 @@ dist/
 .DS_Store
 npm-debug.log
 
-#API keys and mySQL root server password
 config.js
+*.sqlite
 

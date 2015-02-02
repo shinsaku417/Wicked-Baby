@@ -2,7 +2,7 @@
 
 angular.module('wickedBaby', [])
   .controller('MainCtrl', function ($scope, LoginFactory, socket) {
-
+    console.log('this is a console TESTTTTTTTTTTTTT')
     // Emit custom login events to the server
     $scope.emitMessage = function(person){
       var personLogin = person + ' login';
@@ -109,59 +109,59 @@ angular.module('wickedBaby', [])
     // Calculate confusion rate and percentage
     var confusionCalculator = function() {
       $scope.confusionRate = ($scope.counter / 30).toFixed(2);
-      $scope.percentage = $scope.confusionRate * 100 + "%";
+      $scope.percentage = $scope.confusionRate * 100;
     }
 
     // Initialize the confusion rate and percentage
     confusionCalculator();
 
-    // For demo purposes only
-    var count = 0;
-    setInterval(function() {
-      if (count < 30) {
-        $scope.$apply(function() {
-          $scope.counter++;
-          confusionCalculator();
-          $scope.degree = $scope.confusionRate * 180;
-          document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
-          count++;
-        });
-      }
-    }, 1000);
+    // // For demo purposes only
+    // var count = 0;
+    // setInterval(function() {
+    //   if (count < 30) {
+    //     $scope.$apply(function() {
+    //       $scope.counter++;
+    //       confusionCalculator();
+    //       $scope.degree = $scope.confusionRate * 180;
+    //       document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
+    //       count++;
+    //     });
+    //   }
+    // }, 1000);
 
-    // For demo purposes only
-    setTimeout(function() {
-      swal({
-        title: "Students are Confused!",
-        text: "After you've helped them, click 'Resolved'",
-        type: "warning",
-        confirmButtonText: "Resolved!"
-      },
+    // // For demo purposes only
+    // setTimeout(function() {
+    //   swal({
+    //     title: "Students are Confused!",
+    //     text: "After you've helped them, click 'Resolved'",
+    //     type: "warning",
+    //     confirmButtonText: "Resolved!"
+    //   },
       // Callback function that is invoked after the teacher addresses the confusion
-      function() {
-        // Emit 'confusion resolved' message to server
-        socket.emit("confusion resolved");
-        //
-        $scope.$apply(function() {
-          // reset the counter to 0, update the confusion rate, and rotate the thumb image based on the updated confusion rate.
-          $scope.counter = 0;
-          localStorage["confusedCounter"] = $scope.counter;
-          confusionCalculator();
-          $scope.degree = 0;
-          document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
-        });
+    //   function() {
+    //     // Emit 'confusion resolved' message to server
+    //     socket.emit("confusion resolved");
+    //     //
+    //     $scope.$apply(function() {
+    //       // reset the counter to 0, update the confusion rate, and rotate the thumb image based on the updated confusion rate.
+    //       $scope.counter = 0;
+    //       localStorage["confusedCounter"] = $scope.counter;
+    //       confusionCalculator();
+    //       $scope.degree = 0;
+    //       document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
+    //     });
 
-        // reset the confused status of all students
-        for(var key in studentConfusedStatus){
-          studentConfusedStatus[key] = false;
-        }
-      });
-    }, 30000);
+    //     // reset the confused status of all students
+    //     for(var key in studentConfusedStatus){
+    //       studentConfusedStatus[key] = false;
+    //     }
+    //   });
+    // }, 30000);
 
     // Listen to 'add' event emitted by the server
     socket.on('add', function(username) {
       // If the student has NOT previously clicked on the 'I'm confused :(' button
-      if(!studentConfusedStatus.username){
+      // if(!studentConfusedStatus.username){
         // store the student's confused status
         studentConfusedStatus.username = true;
       // Update the confusion rate and rotate the thumb based on the updated confusion rate.
@@ -198,19 +198,19 @@ angular.module('wickedBaby', [])
             });
 
             // reset the confused status of all students
-            for(var key in studentConfusedStatus){
-              studentConfusedStatus[key] = false;
-            }
+            // for(var key in studentConfusedStatus){
+            //   studentConfusedStatus[key] = false;
+            // }
           });
         }
-      }
+      // }
 
     });
 
     // Listen to 'subtract' event emitted by the server
     socket.on('subtract', function(username) {
       // If the student has previously clicked on the 'I'm confused :(' button and is no longer confused
-      if(studentConfusedStatus.username){
+      // if(studentConfusedStatus.username){
         // update the student's confused status
         studentConfusedStatus.username = false;
         // Update the confusion rate and rotate the thumb image based on the updated confusion rate.
@@ -219,9 +219,9 @@ angular.module('wickedBaby', [])
           localStorage["confusedCounter"] = $scope.counter;
           confusionCalculator();
           $scope.degree = $scope.confusionRate * 180;
-          document.getElementsByClassName('thumb')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
+          document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
         });
-      }
+      // }
 
     });
 
@@ -245,7 +245,7 @@ angular.module('wickedBaby', [])
 
     var login = function(person) {
       // redirect to /student or /teacher html pages, depending on whether a student or teacher is logging in
-      window.location.href = 'http://127.0.0.1:8000/' + person;
+      //window.location.href = 'http://127.0.0.1:8000/' + person;
     };
 
     return {
@@ -256,7 +256,8 @@ angular.module('wickedBaby', [])
   // connect to the local host and return the socket
   .factory('socket', function() {
 
-    var socket = io.connect('http://127.0.0.1:8000/');
+    var socket = io.connect(window.location.hostname);
+    //window.location.hostname
 
     return socket;
 
