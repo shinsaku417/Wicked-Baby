@@ -183,6 +183,7 @@ io.on('connection', function (socket) {
     // emits the add message to all the clients
     io.sockets.emit('add', data.username);
     // emits a message that will be listened by specific student
+    console.log(data.username, '///////IS CONFUSED');
     io.sockets.emit('enable cancel on ' + data.username);
   });
 
