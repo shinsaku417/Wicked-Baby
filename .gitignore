@@ -7,5 +7,4 @@ dist/
 npm-debug.log
 
 #API keys and mySQL root server password
-config.js
-
+#config.js
