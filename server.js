@@ -89,26 +89,27 @@ function(req, res){
 app.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
-    if (utils.isTeacher(req.user.displayName, teachers)) {
-      utils.userExistsInDB(req.user.username, db.Teacher).then(function(data) {
-        if (data) {
-          res.redirect('/teacher');
-        } else {
-          utils.createUser(req.user.username, req.user.displayName, db.Teacher);
-          res.redirect('/teacher');
-        }
-      })
+    // if (utils.isTeacher(req.user.displayName, teachers)) {
+    //   utils.userExistsInDB(req.user.username, db.Teacher).then(function(data) {
+    //     if (data) {
+    //       res.redirect('/teacher');
+    //     } else {
+    //       utils.createUser(req.user.username, req.user.displayName, db.Teacher);
+    //       res.redirect('/teacher');
+    //     }
+    //   })
 
-    } else {
-      utils.userExistsInDB(req.user.username, db.Student).then(function(data) {
-        if (data) {
-          res.redirect('/student/*');
-        } else {
-          utils.createUser(req.user.username, req.user.displayName, db.Student);
-          res.redirect('/student/*');
-        }
-      })
-    }
+    // } else {
+    //   utils.userExistsInDB(req.user.username, db.Student).then(function(data) {
+    //     if (data) {
+    //       res.redirect('/student/*');
+    //     } else {
+    //       utils.createUser(req.user.username, req.user.displayName, db.Student);
+    //       res.redirect('/student/*');
+    //     }
+    //   })
+    // }
+    res.redirect('/student/*');
   });
 
 app.get('/logout', function(req, res){
