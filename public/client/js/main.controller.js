@@ -109,7 +109,7 @@ angular.module('wickedBaby', [])
     // Calculate confusion rate and percentage
     var confusionCalculator = function() {
       $scope.confusionRate = ($scope.counter / 30).toFixed(2);
-      $scope.percentage = $scope.confusionRate * 100 + "%";
+      $scope.percentage = $scope.confusionRate * 100;
     }
 
     // Initialize the confusion rate and percentage
@@ -161,7 +161,7 @@ angular.module('wickedBaby', [])
     // Listen to 'add' event emitted by the server
     socket.on('add', function(username) {
       // If the student has NOT previously clicked on the 'I'm confused :(' button
-      if(!studentConfusedStatus.username){
+      // if(!studentConfusedStatus.username){
         // store the student's confused status
         studentConfusedStatus.username = true;
       // Update the confusion rate and rotate the thumb based on the updated confusion rate.
@@ -198,19 +198,19 @@ angular.module('wickedBaby', [])
             });
 
             // reset the confused status of all students
-            for(var key in studentConfusedStatus){
-              studentConfusedStatus[key] = false;
-            }
+            // for(var key in studentConfusedStatus){
+            //   studentConfusedStatus[key] = false;
+            // }
           });
         }
-      }
+      // }
 
     });
 
     // Listen to 'subtract' event emitted by the server
     socket.on('subtract', function(username) {
       // If the student has previously clicked on the 'I'm confused :(' button and is no longer confused
-      if(studentConfusedStatus.username){
+      // if(studentConfusedStatus.username){
         // update the student's confused status
         studentConfusedStatus.username = false;
         // Update the confusion rate and rotate the thumb image based on the updated confusion rate.
@@ -221,7 +221,7 @@ angular.module('wickedBaby', [])
           $scope.degree = $scope.confusionRate * 180;
           document.getElementsByClassName('thumb-teacher')[0].style.webkitTransform = 'rotate('+ $scope.degree +'deg)';
         });
-      }
+      // }
 
     });
 
