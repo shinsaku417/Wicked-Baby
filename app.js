@@ -8,9 +8,9 @@ var mysqlPassword = require('./config.js').mysqlPassword;
 //initializes Sequelize with mysql database, listens to port 3306
 
 var db = new Sequelize('thumbs', 'root', mysqlPassword, {//database name, username, mysql root password
-      host: '127.0.0.1',
+      host: process.env.HOST,
       dialect: "mysql",
-      port:    3306, 
+      port:    process.env.PORT 
     })
 
 //connects database
