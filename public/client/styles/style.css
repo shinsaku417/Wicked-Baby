@@ -1,10 +1,11 @@
 /* index.html */
 .container {
   position: fixed;
-  top: 40%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align:center;
+  display: block;
 }
 
 .thumb {
@@ -15,6 +16,45 @@
 
 .loginbutton {
   display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.quote {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  position: fixed;
+  margin-top: 410px;
+  width: 1450px;
+}
+
+h3 {
+  text-align: center;
+  font-style: italic;
+}
+
+.as-seen {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  position: fixed;
+  margin-top: 520px;
+  opacity: 0.4;
+  width: 1450px;
+}
+
+h2 {
+  text-align: center;
+  font-style: italic;
+}
+
+.logos {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100px;
+  width: 1200px;
 }
 
 /* student.html */
