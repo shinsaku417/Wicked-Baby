@@ -256,7 +256,7 @@ angular.module('wickedBaby', [])
   // connect to the local host and return the socket
   .factory('socket', function() {
 
-    var socket = io.connect(process.env.HOST + ":" + process.env.PORT + "/");
+    var socket = io.connect(window.location.hostname);
 
     return socket;
 
