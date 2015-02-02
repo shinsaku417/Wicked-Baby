@@ -181,7 +181,7 @@ io.on('connection', function (socket) {
     console.log('incrementConfuseCount was called');
     utils.incrementConfuseCount(data.username, db.Student);
     // emits the add message to all the clients
-    io.sockets.emit('add');
+    io.sockets.emit('add', data.username);
     // emits a message that will be listened by specific student
     io.sockets.emit('enable cancel on ' + data.username);
   });
@@ -189,7 +189,7 @@ io.on('connection', function (socket) {
   // when student presses cancel or 60 seconds have passed after pressing the button
   socket.on('not confused', function (data) {
     // emits the subtract message to all the clients
-    io.sockets.emit('subtract');
+    io.sockets.emit('subtract', data.username);
     // emits a message that will be listened by specific student
     io.sockets.emit('enable confused on ' + data.username);
   });
