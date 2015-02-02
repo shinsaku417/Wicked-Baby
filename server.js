@@ -2,8 +2,8 @@ var express = require('express');
 var app = express(); //initializes express application
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var teachers = require('./config.js').teachers;
-var utils = require('./utils.js');
+var teachers = require(__dirname + '/config.js').teachers;
+var utils = require(__dirname + '/utils.js');
 
 ////////////////////////////////////////////////////
 var request = require('request');//simplified HTTP request client
