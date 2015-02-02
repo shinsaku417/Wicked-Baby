@@ -59,8 +59,8 @@ passport.use(new GitHubStrategy({
   clientID: keys.GITHUB_CLIENT_ID,
   clientSecret: keys.GITHUB_CLIENT_SECRET,
   //callbackURL: process.env.host + ":" + port + "/github/callback"
-  callbackURL: 'http://localhost:8000/github/callback'
-  //callbackURL: 'http://testingggg.azurewebsites.net/github/callback'
+  callbackURL: 'http://testingggg.azurewebsites.net/github/callback'
+  //callbackURL: 'http://localhost:8000/github/callback'
 },
 function(accessToken, refreshToken, profile, done) {
   // asynchronous verification, for effect...
@@ -101,7 +101,6 @@ app.get('/github/callback',
       })
 
     } else {
-      console.log('/////////////STUDENT MODEL', db.Student);
       utils.userExistsInDB(req.user.username, db.Student).then(function(data) {
         if (data) {
           res.redirect('/student/*');
@@ -121,7 +120,7 @@ app.get('/logout', function(req, res){
 
 
 server.listen(port, function(){
-  console.log('Listening on port 8000')
+  console.log('Listening on ' + port);
 });
 
 // serve up html files.

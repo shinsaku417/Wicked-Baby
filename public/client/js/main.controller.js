@@ -245,7 +245,7 @@ angular.module('wickedBaby', [])
 
     var login = function(person) {
       // redirect to /student or /teacher html pages, depending on whether a student or teacher is logging in
-      window.location.href = 'http://127.0.0.1:8000/' + person;
+      //window.location.href = 'http://127.0.0.1:8000/' + person;
     };
 
     return {
