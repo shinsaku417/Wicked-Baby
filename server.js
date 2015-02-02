@@ -13,7 +13,7 @@ var session = require('express-session');
 
 //EXAMPLE OF PASSPORT IN ACTION:
 
-var db = require('./app.js');
+var db = require(__dirname + '/app.js');
 var keys = require(__dirname + '/config.js');//contains api keys for github login
 var port = process.env.PORT || 8000;
 
@@ -59,7 +59,8 @@ passport.use(new GitHubStrategy({
   clientID: keys.GITHUB_CLIENT_ID,
   clientSecret: keys.GITHUB_CLIENT_SECRET,
   //callbackURL: process.env.host + ":" + port + "/github/callback"
-  callbackURL: 'http://testingggg.azurewebsites.net/github/callback'
+  callbackURL: 'http://localhost:8000/github/callback'
+  //callbackURL: 'http://testingggg.azurewebsites.net/github/callback'
 },
 function(accessToken, refreshToken, profile, done) {
   // asynchronous verification, for effect...
@@ -89,26 +90,27 @@ function(req, res){
 app.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   function(req, res) {
-    // if (utils.isTeacher(req.user.displayName, teachers)) {
-    //   utils.userExistsInDB(req.user.username, db.Teacher).then(function(data) {
-    //     if (data) {
-    //       res.redirect('/teacher');
-    //     } else {
-    //       utils.createUser(req.user.username, req.user.displayName, db.Teacher);
-    //       res.redirect('/teacher');
-    //     }
-    //   })
+    if (utils.isTeacher(req.user.displayName, teachers)) {
+      utils.userExistsInDB(req.user.username, db.Teacher).then(function(data) {
+        if (data) {
+          res.redirect('/teacher');
+        } else {
+          utils.createUser(req.user.username, req.user.displayName, db.Teacher);
+          res.redirect('/teacher');
+        }
+      })
 
-    // } else {
-    //   utils.userExistsInDB(req.user.username, db.Student).then(function(data) {
-    //     if (data) {
-    //       res.redirect('/student/*');
-    //     } else {
-    //       utils.createUser(req.user.username, req.user.displayName, db.Student);
-    //       res.redirect('/student/*');
-    //     }
-    //   })
-    // }
+    } else {
+      console.log('/////////////STUDENT MODEL', db.Student);
+      utils.userExistsInDB(req.user.username, db.Student).then(function(data) {
+        if (data) {
+          res.redirect('/student/*');
+        } else {
+          utils.createUser(req.user.username, req.user.displayName, db.Student);
+          res.redirect('/student/*');
+        }
+      })
+    }
     res.redirect('/student/*');
   });
 

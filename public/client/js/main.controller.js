@@ -257,6 +257,7 @@ angular.module('wickedBaby', [])
   .factory('socket', function() {
 
     var socket = io.connect(window.location.hostname);
+    //window.location.hostname
 
     return socket;
 

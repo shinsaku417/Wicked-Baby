@@ -7,10 +7,7 @@ var db = new Sequelize('thumbs', 'root', '', {
   storage: './db.sqlite'
 });
 
-module.exports = db;
-
 ////////////////REFACTOR TO SQLITE//////////////////////////
-
 
 // var exports = module.exports = {}; //allows exporting of this module
 
@@ -22,6 +19,7 @@ module.exports = db;
 
 // var db = new Sequelize('thumbs', 'root', mysqlPassword, {//database name, username, mysql root password
 //       dialect: 'sqlite',
+        //host: local
 //       storage: './server/db/db.sqlite'
 //       //port:    process.env.PORT 
 //     })
@@ -54,7 +52,7 @@ db
     }
   })
 
- 
-// exports.db = db;
+exports.db = db;
+
 
 
