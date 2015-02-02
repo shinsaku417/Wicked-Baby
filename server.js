@@ -54,10 +54,12 @@ passport.deserializeUser(function(obj, done) {
 //   Strategies in Passport require a `verify` function, which accept
 //   credentials (in this case, an accessToken, refreshToken, and GitHub
 //   profile), and invoke a callback with a user object.
+console.log(process.env.host);
 passport.use(new GitHubStrategy({
   clientID: keys.GITHUB_CLIENT_ID,
   clientSecret: keys.GITHUB_CLIENT_SECRET,
-  callbackURL: process.env.host + ":" + port + "/github/callback"
+  //callbackURL: process.env.host + ":" + port + "/github/callback"
+  callbackURL: 'http://testingggg.azurewebsites.net/github/callback'
 },
 function(accessToken, refreshToken, profile, done) {
   // asynchronous verification, for effect...
