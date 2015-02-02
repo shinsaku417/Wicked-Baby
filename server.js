@@ -14,7 +14,7 @@ var session = require('express-session');
 //EXAMPLE OF PASSPORT IN ACTION:
 
 var db = require('./app.js');
-var keys = require('./config.js');//contains api keys for github login
+var keys = require(__dirname + '/config.js');//contains api keys for github login
 var port = process.env.PORT || 8000;
 
 //EXAMPLE OF PASSPORT IN ACTION:

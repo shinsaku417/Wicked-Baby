@@ -3,7 +3,7 @@ var exports = module.exports = {}; //allows exporting of this module
 
 var Sequelize = require('sequelize');
 var mysql = require('mysql');
-var mysqlPassword = require('./config.js').mysqlPassword;
+var mysqlPassword = require(__dirname + '/config.js').mysqlPassword;
 
 //initializes Sequelize with mysql database, listens to port 3306
 
