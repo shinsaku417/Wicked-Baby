@@ -9,3 +9,6 @@ npm-debug.log
 #API keys and mySQL root server password
 #config.js
 
+## SQLite database
+*.sqlite
+

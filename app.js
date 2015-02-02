@@ -1,20 +1,32 @@
 
-var exports = module.exports = {}; //allows exporting of this module
-
+////////////////REFACTOR TO SQLITE//////////////////////////
 var Sequelize = require('sequelize');
-var mysql = require('mysql');
-var mysqlPassword = require(__dirname + '/config.js').mysqlPassword;
 
-//initializes Sequelize with mysql database, listens to port 3306
+var db = new Sequelize('thumbs', 'root', '', {
+  dialect: 'sqlite',
+  storage: './server/db/db.sqlite'
+});
 
-var db = new Sequelize('thumbs', 'root', mysqlPassword, {//database name, username, mysql root password
-      host: 'mysql://b6102f9af6b845:433e175d@us-cdbr-azure-west-a.cloudapp.net/THUMBSDBMySQLDatabase',
-      dialect: "mysql",
-      port:    process.env.PORT 
-    })
-//process.env.HOST
+module.exports = db;
 
-//connects database
+////////////////REFACTOR TO SQLITE//////////////////////////
+
+
+// var exports = module.exports = {}; //allows exporting of this module
+
+// var Sequelize = require('sequelize');
+// var mysql = require('mysql');
+// var mysqlPassword = require(__dirname + '/config.js').mysqlPassword;
+
+// //initializes Sequelize with mysql database, listens to port 3306
+
+// var db = new Sequelize('thumbs', 'root', mysqlPassword, {//database name, username, mysql root password
+//       dialect: 'sqlite',
+//       storage: './server/db/db.sqlite'
+//       //port:    process.env.PORT 
+//     })
+
+// //connects database
 db
   .authenticate()
   .complete(function(err) {
@@ -43,6 +55,6 @@ db
   })
 
  
-exports.db = db;
+// exports.db = db;
 
 
